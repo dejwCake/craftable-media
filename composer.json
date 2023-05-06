@@ -55,9 +55,6 @@
             "providers": [
                 "Brackets\\Media\\MediaServiceProvider"
             ]
-        },
-        "branch-alias": {
-            "dev-master": "7.0-dev"
         }
     }
 }
