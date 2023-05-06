@@ -7,3 +7,18 @@ This packages adds an ability to assign a media to your eloquent models. It uses
 - Private access - controls, who has the permission to view specific medium
 
 You can find full documentation at https://docs.getcraftable.com/#/media.
+
+## Run tests
+
+To run tests use this docker environment.
+
+```shell
+  docker-compose run -it test vendor/bin/phpunit
+```
+
+To switch between postgresql and mariadb change in `docker-compose.yml` DB_CONNECTION environmental variable:
+
+```git
+- DB_CONNECTION: pgsql
++ DB_CONNECTION: mysql
+```

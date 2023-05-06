@@ -4,7 +4,6 @@ namespace Brackets\Media\Test;
 
 use Brackets\Media\MediaServiceProvider;
 use Brackets\Media\UrlGenerator\LocalUrlGenerator;
-use CreateMediaTable;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Application;
@@ -85,11 +84,25 @@ abstract class TestCase extends Orchestra
             $app['config']->set('database.default', 'pgsql');
             $app['config']->set('database.connections.pgsql', [
                 'driver' => 'pgsql',
-                'host' => 'testing',
+                'host' => 'pgsql',
                 'port' => '5432',
-                'database' => 'homestead',
-                'username' => 'homestead',
-                'password' => 'secret',
+                'database' => env('DB_DATABASE', 'laravel'),
+                'username' => env('DB_USERNAME', 'root'),
+                'password' => env('DB_PASSWORD', 'bestsecret'),
+                'charset' => 'utf8',
+                'prefix' => '',
+                'schema' => 'public',
+                'sslmode' => 'prefer',
+            ]);
+        } else if (env('DB_CONNECTION') === 'mysql') {
+            $app['config']->set('database.default', 'mysql');
+            $app['config']->set('database.connections.mysql', [
+                'driver' => 'mysql',
+                'host' => 'mysql',
+                'port' => '3306',
+                'database' => env('DB_DATABASE', 'laravel'),
+                'username' => env('DB_USERNAME', 'root'),
+                'password' => env('DB_PASSWORD', 'bestsecret'),
                 'charset' => 'utf8',
                 'prefix' => '',
                 'schema' => 'public',
@@ -148,7 +161,7 @@ abstract class TestCase extends Orchestra
     /**
      * @param Application $app
      */
-    protected function setUpDatabase($app): void
+    protected function setUpDatabase(Application $app): void
     {
         $app['db']->connection()->getSchemaBuilder()->create('test_models', function (Blueprint $table) {
             $table->increments('id');
@@ -157,8 +170,6 @@ abstract class TestCase extends Orchestra
         });
 
         TestModel::create(['name' => 'test']);
-
-        include_once 'vendor/spatie/laravel-medialibrary/database/migrations/create_media_table.php.stub';
 
         Schema::create('media', function (Blueprint $table) {
             $table->id();
@@ -183,7 +194,7 @@ abstract class TestCase extends Orchestra
     }
 
     // FIXME what is this method for?
-    protected function setUpTempTestFiles()
+    protected function setUpTempTestFiles(): void
     {
         $this->initializeDirectory($this->getTestFilesDirectory());
         $this->initializeDirectory($this->getUploadsDirectory());
@@ -206,7 +217,7 @@ abstract class TestCase extends Orchestra
      * @param string $suffix
      * @return string
      */
-    public function getTempDirectory($suffix = ''): string
+    public function getTempDirectory(string $suffix = ''): string
     {
         return __DIR__ . '/temp' . ($suffix === '' ? '' : '/' . $suffix);
     }
@@ -215,7 +226,7 @@ abstract class TestCase extends Orchestra
      * @param string $suffix
      * @return string
      */
-    public function getMediaDirectory($suffix = ''): string
+    public function getMediaDirectory(string $suffix = ''): string
     {
         return $this->getTempDirectory('media') . ($suffix === '' ? '' : '/' . $suffix);
     }
@@ -224,7 +235,7 @@ abstract class TestCase extends Orchestra
      * @param string $suffix
      * @return string
      */
-    public function getUploadsDirectory($suffix = ''): string
+    public function getUploadsDirectory(string $suffix = ''): string
     {
         return $this->getTempDirectory('uploads') . ($suffix === '' ? '' : '/' . $suffix);
     }
@@ -233,7 +244,7 @@ abstract class TestCase extends Orchestra
      * @param string $suffix
      * @return string
      */
-    public function getTestFilesDirectory($suffix = ''): string
+    public function getTestFilesDirectory(string $suffix = ''): string
     {
         return $this->getTempDirectory('app') . ($suffix === '' ? '' : '/' . $suffix);
     }
@@ -249,29 +260,6 @@ abstract class TestCase extends Orchestra
         });
         Gate::define('admin.upload', static function ($user) {
             return true;
-        });
-    }
-
-    /**
-     * Disable exception handling
-     */
-    protected function disableExceptionHandling(): void
-    {
-        $this->app->instance(ExceptionHandler::class, new class extends Handler
-        {
-            public function __construct()
-            {
-            }
-
-            public function report(Throwable $e)
-            {
-                // no-op
-            }
-
-            public function render($request, Throwable $e)
-            {
-                throw $e;
-            }
         });
     }
 }

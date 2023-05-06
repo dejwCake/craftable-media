@@ -5,3 +5,4 @@ vendor
 tests/temp
 composer.lock
 .phpunit.result.cache
+.phpunit.cache

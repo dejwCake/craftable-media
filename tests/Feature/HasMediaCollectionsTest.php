@@ -127,7 +127,6 @@ class HasMediaCollectionsTest extends TestCase
     /** @test */
     public function media_is_saved_automatically_when_model_is_saved()
     {
-        $this->disableExceptionHandling();
         $response = $this->post('/test-model/create', [
             'name' => 'Test auto process',
             'documents' => [
@@ -175,7 +174,6 @@ class HasMediaCollectionsTest extends TestCase
     /** @test */
     public function user_cannot_upload_not_allowed_file_types()
     {
-        $this->disableExceptionHandling();
         $this->expectException(MimeTypeNotAllowed::class);
 
         $this->testModel->addMediaCollection('documents')
