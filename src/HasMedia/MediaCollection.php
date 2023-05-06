@@ -10,19 +10,19 @@ class MediaCollection extends ParentMediaCollection
     protected bool $isImage = false;
     
     /** @var int|null */
-    protected ?int $maxNumberOfFiles;
+    protected ?int $maxNumberOfFiles = null;
     
     /** @var int */
     protected int $maxFileSize;
     
     /** @var array|null */
-    protected ?array $acceptedFileTypes;
+    protected ?array $acceptedFileTypes = null;
     
     /** @var string|null */
-    protected ?string $viewPermission;
+    protected ?string $viewPermission = null;
     
     /** @var string|null */
-    protected ?string $uploadPermission;
+    protected ?string $uploadPermission = null;
 
     /**
      * MediaCollection constructor.
