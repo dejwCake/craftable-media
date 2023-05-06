@@ -7,22 +7,22 @@ use Spatie\MediaLibrary\MediaCollections\MediaCollection as ParentMediaCollectio
 class MediaCollection extends ParentMediaCollection
 {
     /** @var bool */
-    protected $isImage = false;
+    protected bool $isImage = false;
+    
+    /** @var int|null */
+    protected ?int $maxNumberOfFiles;
     
     /** @var int */
-    protected $maxNumberOfFiles;
+    protected int $maxFileSize;
     
-    /** @var float */
-    protected $maxFileSize;
+    /** @var array|null */
+    protected ?array $acceptedFileTypes;
     
-    /** @var array */
-    protected $acceptedFileTypes;
+    /** @var string|null */
+    protected ?string $viewPermission;
     
-    /** @var string */
-    protected $viewPermission;
-    
-    /** @var string */
-    protected $uploadPermission;
+    /** @var string|null */
+    protected ?string $uploadPermission;
 
     /**
      * MediaCollection constructor.
@@ -67,11 +67,11 @@ class MediaCollection extends ParentMediaCollection
     /**
      * Set the file count limit
      *
-     * @param $maxNumberOfFiles
+     * @param int $maxNumberOfFiles
      *
      * @return $this
      */
-    public function maxNumberOfFiles($maxNumberOfFiles): self
+    public function maxNumberOfFiles(int $maxNumberOfFiles): self
     {
         $this->maxNumberOfFiles = $maxNumberOfFiles;
 
@@ -81,11 +81,11 @@ class MediaCollection extends ParentMediaCollection
     /**
      * Set the file size limit
      *
-     * @param $maxFileSize
+     * @param int $maxFileSize
      *
      * @return $this
      */
-    public function maxFileSize($maxFileSize): self
+    public function maxFileSize(int $maxFileSize): self
     {
         $this->maxFileSize = $maxFileSize;
 
@@ -118,11 +118,11 @@ class MediaCollection extends ParentMediaCollection
      *
      * Otherwise, you may use other private disk for your own. Just be sure, your file is not accessible
      *
-     * @param $viewPermission
+     * @param string $viewPermission
      *
      * @return $this
      */
-    public function canView($viewPermission): self
+    public function canView(string $viewPermission): self
     {
         $this->viewPermission = $viewPermission;
 
@@ -132,11 +132,11 @@ class MediaCollection extends ParentMediaCollection
     /**
      * Set the ability (Gate) which is required to upload & attach new files to the model
      *
-     * @param $uploadPermission
+     * @param string $uploadPermission
      *
      * @return $this
      */
-    public function canUpload($uploadPermission): self
+    public function canUpload(string $uploadPermission): self
     {
         $this->uploadPermission = $uploadPermission;
 
@@ -182,9 +182,9 @@ class MediaCollection extends ParentMediaCollection
     }
 
     /**
-     * @return float|null
+     * @return int|null
      */
-    public function getMaxFileSize(): ?float
+    public function getMaxFileSize(): ?int
     {
         return $this->maxFileSize;
     }

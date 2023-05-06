@@ -13,7 +13,7 @@ class MediaServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         if (app(Router::class)->hasMiddlewareGroup('admin')) {
             Route::middleware(['web', 'admin'])
@@ -36,7 +36,7 @@ class MediaServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         //FIXME it would be nice if you could somehow publish into filesystems
         $this->mergeConfigFrom(

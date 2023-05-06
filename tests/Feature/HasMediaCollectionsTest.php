@@ -7,6 +7,7 @@ use Brackets\Media\Exceptions\FileCannotBeAdded\TooManyFiles;
 
 use Brackets\Media\Test\TestCase;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\MimeTypeNotAllowed;
 
 class HasMediaCollectionsTest extends TestCase
@@ -15,13 +16,13 @@ class HasMediaCollectionsTest extends TestCase
     /** @test */
     public function empty_collection_returns_a_laravel_collection()
     {
-        $this->assertInstanceOf(\Illuminate\Support\Collection::class, $this->testModel->getMediaCollections());
+        $this->assertInstanceOf(Collection::class, $this->testModel->getMediaCollections());
     }
 
     /** @test */
     public function not_empty_collection_returns_a_laravel_collection()
     {
-        $this->assertInstanceOf(\Illuminate\Support\Collection::class, $this->testModelWithCollections->getMediaCollections());
+        $this->assertInstanceOf(Collection::class, $this->testModelWithCollections->getMediaCollections());
     }
 
     /** @test */

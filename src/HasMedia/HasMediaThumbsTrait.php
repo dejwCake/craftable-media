@@ -2,6 +2,7 @@
 
 namespace Brackets\Media\HasMedia;
 
+use Illuminate\Support\Collection;
 use Spatie\MediaLibrary\Conversions\ConversionCollection;
 
 /**
@@ -11,9 +12,9 @@ trait HasMediaThumbsTrait
 {
     /**
      * @param string $mediaCollectionName
-     * @return mixed
+     * @return Collection
      */
-    public function getThumbs200ForCollection(string $mediaCollectionName)
+    public function getThumbs200ForCollection(string $mediaCollectionName): Collection
     {
         $mediaCollection = $this->getMediaCollection($mediaCollectionName);
         return $this->getMedia($mediaCollectionName)->filter(static function ($medium) use ($mediaCollectionName, $mediaCollection) {

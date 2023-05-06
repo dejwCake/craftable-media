@@ -4,7 +4,7 @@ namespace Brackets\Media\Test;
 
 use Brackets\Media\MediaServiceProvider;
 use Brackets\Media\UrlGenerator\LocalUrlGenerator;
-use Exception;
+use CreateMediaTable;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Application;
@@ -14,6 +14,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Schema;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Throwable;
 use Spatie\MediaLibrary\MediaLibraryServiceProvider;
@@ -23,10 +24,10 @@ abstract class TestCase extends Orchestra
     use RefreshDatabase;
 
     /** @var TestModel */
-    protected $testModel;
+    protected TestModel $testModel;
 
     /** @var TestModelWithCollections */
-    protected $testModelWithCollections;
+    protected TestModelWithCollections $testModelWithCollections;
 
     public function setUp(): void
     {
@@ -65,7 +66,7 @@ abstract class TestCase extends Orchestra
      *
      * @return array
      */
-    protected function getPackageProviders($app)
+    protected function getPackageProviders($app): array
     {
         return [
             MediaLibraryServiceProvider::class,
@@ -76,7 +77,7 @@ abstract class TestCase extends Orchestra
     /**
      * @param Application $app
      */
-    protected function getEnvironmentSetUp($app)
+    protected function getEnvironmentSetUp($app): void
     {
         $this->initializeDirectory($this->getTempDirectory());
 
@@ -147,7 +148,7 @@ abstract class TestCase extends Orchestra
     /**
      * @param Application $app
      */
-    protected function setUpDatabase($app)
+    protected function setUpDatabase($app): void
     {
         $app['db']->connection()->getSchemaBuilder()->create('test_models', function (Blueprint $table) {
             $table->increments('id');
@@ -159,7 +160,26 @@ abstract class TestCase extends Orchestra
 
         include_once 'vendor/spatie/laravel-medialibrary/database/migrations/create_media_table.php.stub';
 
-        (new \CreateMediaTable())->up();
+        Schema::create('media', function (Blueprint $table) {
+            $table->id();
+
+            $table->morphs('model');
+            $table->uuid('uuid')->nullable()->unique();
+            $table->string('collection_name');
+            $table->string('name');
+            $table->string('file_name');
+            $table->string('mime_type')->nullable();
+            $table->string('disk');
+            $table->string('conversions_disk')->nullable();
+            $table->unsignedBigInteger('size');
+            $table->json('manipulations');
+            $table->json('custom_properties');
+            $table->json('generated_conversions');
+            $table->json('responsive_images');
+            $table->unsignedInteger('order_column')->nullable()->index();
+
+            $table->nullableTimestamps();
+        });
     }
 
     // FIXME what is this method for?

@@ -9,6 +9,9 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileCannotBeAdded;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig as SpatieFileIsTooBig;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\MimeTypeNotAllowed;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\MediaLibrary\MediaCollections\Models\Media as MediaModel;
 
@@ -68,9 +71,10 @@ trait ProcessMediaTrait
     /**
      * Process single file metadata add/edit/delete to media library
      *
-     * @param $inputMedium
-     * @param $mediaCollection
-     * @throws FileCannotBeAdded
+     * @param array $inputMedium
+     * @param MediaCollection $mediaCollection
+     * @throws FileDoesNotExist
+     * @throws SpatieFileIsTooBig
      */
     public function processMedium(array $inputMedium, MediaCollection $mediaCollection): void
     {
@@ -93,7 +97,7 @@ trait ProcessMediaTrait
     }
 
     /**
-     * Validae input data for media
+     * Validate input data for media
      *
      * @param Collection $inputMediaForMediaCollection
      * @param MediaCollection $mediaCollection
@@ -143,6 +147,7 @@ trait ProcessMediaTrait
      *
      * @param string $mediumFileFullPath
      * @param MediaCollection $mediaCollection
+     * @throws MimeTypeNotAllowed
      */
     public function validateTypeOfFile(string $mediumFileFullPath, MediaCollection $mediaCollection): void
     {

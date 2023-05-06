@@ -14,6 +14,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Response as ResponseFacade;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
+use League\Flysystem\FilesystemException;
 use Spatie\MediaLibrary\MediaCollections\Models\Media as MediaModel;
 
 class FileViewController extends BaseController
@@ -22,10 +23,10 @@ class FileViewController extends BaseController
 
     /**
      * @param Request $request
-     * @throws AuthorizationException
-     * @throws FileNotFoundException
-     * @throws ValidationException
      * @return Response|null
+     * @throws AuthorizationException
+     * @throws ValidationException
+     * @throws FilesystemException
      */
     public function view(Request $request): ?Response
     {
@@ -48,12 +49,12 @@ class FileViewController extends BaseController
                 $storagePath = $request->get('path');
                 $fileSystem  = Storage::disk($mediaCollection->getDisk());
 
-                if (! $fileSystem->has($storagePath)) {
+                if (! $fileSystem->exists($storagePath)) {
                     abort(404);
                 }
 
                 return ResponseFacade::make($fileSystem->get($storagePath), 200, [
-                    'Content-Type'        => $fileSystem->mimeType($storagePath),
+                    'Content-Type' => $fileSystem->mimeType($storagePath),
                     'Content-Disposition' => 'inline; filename="' . basename($request->get('path')) . '"'
                 ]);
             }
