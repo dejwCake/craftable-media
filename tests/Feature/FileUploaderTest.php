@@ -9,7 +9,7 @@ class FileUploaderTest extends TestCase
 {
 
     /** @test */
-    public function a_user_can_upload_file()
+    public function a_user_can_upload_file(): void
     {
         $this->disableAuthorization();
         $data = [

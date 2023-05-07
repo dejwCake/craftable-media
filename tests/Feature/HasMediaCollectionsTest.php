@@ -14,33 +14,33 @@ class HasMediaCollectionsTest extends TestCase
 {
 
     /** @test */
-    public function empty_collection_returns_a_laravel_collection()
+    public function empty_collection_returns_a_laravel_collection(): void
     {
         $this->assertInstanceOf(Collection::class, $this->testModel->getMediaCollections());
     }
 
     /** @test */
-    public function not_empty_collection_returns_a_laravel_collection()
+    public function not_empty_collection_returns_a_laravel_collection(): void
     {
         $this->assertInstanceOf(Collection::class, $this->testModelWithCollections->getMediaCollections());
     }
 
     /** @test */
-    public function check_media_collections_count()
+    public function check_media_collections_count(): void
     {
         $this->assertCount(0, $this->testModel->getMediaCollections());
         $this->assertCount(3, $this->testModelWithCollections->getMediaCollections());
     }
 
     /** @test */
-    public function check_image_media_collections_count()
+    public function check_image_media_collections_count(): void
     {
         $this->assertCount(0, $this->testModel->getMediaCollections()->filter->isImage());
         $this->assertCount(1, $this->testModelWithCollections->getMediaCollections()->filter->isImage());
     }
 
     /** @test */
-    public function just_for_dev()
+    public function just_for_dev(): void
     {
         $this->testModel->addMediaCollection('documents');
         $this->testModel->addMediaCollection('video');
@@ -88,7 +88,7 @@ class HasMediaCollectionsTest extends TestCase
     }
 
     /** @test */
-    public function user_can_register_new_file_collection_and_upload_files()
+    public function user_can_register_new_file_collection_and_upload_files(): void
     {
         $this->testModel->addMediaCollection('documents');
 
@@ -125,7 +125,7 @@ class HasMediaCollectionsTest extends TestCase
     }
 
     /** @test */
-    public function media_is_saved_automatically_when_model_is_saved()
+    public function media_is_saved_automatically_when_model_is_saved(): void
     {
         $response = $this->post('/test-model/create', [
             'name' => 'Test auto process',
@@ -150,7 +150,7 @@ class HasMediaCollectionsTest extends TestCase
     }
 
     /** @test */
-    public function media_is_not_saved_automatically_while_model_is_saved_if_this_feature_is_disabled()
+    public function media_is_not_saved_automatically_while_model_is_saved_if_this_feature_is_disabled(): void
     {
         $response = $this->post('/test-model-disabled/create', [
             'name' => 'Test auto process disabled',
@@ -172,7 +172,7 @@ class HasMediaCollectionsTest extends TestCase
     }
 
     /** @test */
-    public function user_cannot_upload_not_allowed_file_types()
+    public function user_cannot_upload_not_allowed_file_types(): void
     {
         $this->expectException(MimeTypeNotAllowed::class);
 
@@ -198,7 +198,7 @@ class HasMediaCollectionsTest extends TestCase
         $this->assertCount(0, $this->testModel->getMedia('documents'));
     }
 
-    public function multiple_allowed_mime_types_can_be_defined()
+    public function multiple_allowed_mime_types_can_be_defined(): void
     {
         $this->testModel->addMediaCollection('documents')
                         ->accepts('application/pdf', 'application/msword');
@@ -223,7 +223,7 @@ class HasMediaCollectionsTest extends TestCase
     }
 
     /** @test */
-    public function user_cannot_upload_more_files_than_allowed()
+    public function user_cannot_upload_more_files_than_allowed(): void
     {
         $this->expectException(TooManyFiles::class);
 
@@ -266,7 +266,7 @@ class HasMediaCollectionsTest extends TestCase
     }
 
     /** @test */
-    public function user_cannot_upload_more_files_than_is_allowed_in_multiple_requests()
+    public function user_cannot_upload_more_files_than_is_allowed_in_multiple_requests(): void
     {
         $this->expectException(TooManyFiles::class);
 
@@ -324,7 +324,7 @@ class HasMediaCollectionsTest extends TestCase
     }
 
     /** @test */ // FIXME this one is redundant, we already tested that in previous test, I think we can totally delete this one
-    public function user_can_upload_exact_number_of_defined_files()
+    public function user_can_upload_exact_number_of_defined_files(): void
     {
         $this->testModel->addMediaCollection('documents')
                         ->maxNumberOfFiles(2);
@@ -357,7 +357,7 @@ class HasMediaCollectionsTest extends TestCase
     }
 
     /** @test */
-    public function user_cannot_upload_file_exceeding_max_file_size()
+    public function user_cannot_upload_file_exceeding_max_file_size(): void
     {
         $this->expectException(FileIsTooBig::class);
 
@@ -385,7 +385,7 @@ class HasMediaCollectionsTest extends TestCase
     }
 
     /** @test */
-    public function user_can_upload_files_in_max_file_size()
+    public function user_can_upload_files_in_max_file_size(): void
     {
         $this->testModel->addMediaCollection('documents')
                         ->maxFilesize(1*1024); //1kb
@@ -410,7 +410,7 @@ class HasMediaCollectionsTest extends TestCase
     }
 
     /** @test */
-    public function not_authorized_user_can_get_public_media()
+    public function not_authorized_user_can_get_public_media(): void
     {
         $this->assertCount(0, $this->testModelWithCollections->getMedia('gallery'));
 
@@ -445,7 +445,7 @@ class HasMediaCollectionsTest extends TestCase
     }
 
     /** @test */
-    public function not_authorized_user_cannot_get_protected_media()
+    public function not_authorized_user_cannot_get_protected_media(): void
     {
         $this->disableAuthorization();
         $this->assertCount(0, $this->testModelWithCollections->getMedia('documents'));
@@ -476,7 +476,7 @@ class HasMediaCollectionsTest extends TestCase
     }
 
     /** @test */
-    public function should_save_model_with_in_auto_process()
+    public function should_save_model_with_in_auto_process(): void
     {
         $response = $this->post('/test-model/create', [
             'name' => 'Test small file',
@@ -498,7 +498,7 @@ class HasMediaCollectionsTest extends TestCase
     }
 
     /** @test */
-    public function should_not_save_model_if_media_failed_in_auto_process()
+    public function should_not_save_model_if_media_failed_in_auto_process(): void
     {
         $response = $this->post('/test-model/create', [
             'name' => 'Test big file',
@@ -529,7 +529,7 @@ class HasMediaCollectionsTest extends TestCase
 //    }
 
     /** @test */
-    public function user_can_delete_file_from_collection()
+    public function user_can_delete_file_from_collection(): void
     {
         $this->testModel->addMediaCollection('documents')
             ->maxNumberOfFiles(2);
@@ -585,7 +585,7 @@ class HasMediaCollectionsTest extends TestCase
     }
 
     /** @test */
-    public function user_can_get_thumbs()
+    public function user_can_get_thumbs(): void
     {
         $this->assertCount(0, $this->testModelWithCollections->getMedia('gallery'));
 
@@ -611,7 +611,7 @@ class HasMediaCollectionsTest extends TestCase
     }
 
     /** @test */
-    public function user_can_get_file_if_thumbs_not_registered()
+    public function user_can_get_file_if_thumbs_not_registered(): void
     {
         $this->assertCount(0, $this->testModelWithCollections->getMedia('gallery'));
 
@@ -635,7 +635,7 @@ class HasMediaCollectionsTest extends TestCase
     }
 
     /** @test */
-    public function system_automatically_detects_image_collection_based_on_mime_type()
+    public function system_automatically_detects_image_collection_based_on_mime_type(): void
     {
         $this->assertCount(1, $this->testModelWithCollections->getMediaCollections()->filter->isImage());
 
@@ -652,7 +652,7 @@ class HasMediaCollectionsTest extends TestCase
         $this->assertCount(2, $this->testModelWithCollections->getMediaCollections()->filter->isImage());
     }
 
-    private function getRequest($data)
+    private function getRequest($data): Request
     {
         return Request::create('test', 'GET', $data);
     }
