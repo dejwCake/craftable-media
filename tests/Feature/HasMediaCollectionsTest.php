@@ -15,24 +15,24 @@ class HasMediaCollectionsTest extends TestCase
 
     public function testEmptyCollectionReturnsLaravelCollection(): void
     {
-        $this->assertInstanceOf(Collection::class, $this->testModel->getMediaCollections());
+        self::assertInstanceOf(Collection::class, $this->testModel->getMediaCollections());
     }
 
     public function testNotEmptyCollectionReturnsLaravelCollection(): void
     {
-        $this->assertInstanceOf(Collection::class, $this->testModelWithCollections->getMediaCollections());
+        self::assertInstanceOf(Collection::class, $this->testModelWithCollections->getMediaCollections());
     }
 
     public function testCheckMediaCollectionsCount(): void
     {
-        $this->assertCount(0, $this->testModel->getMediaCollections());
-        $this->assertCount(3, $this->testModelWithCollections->getMediaCollections());
+        self::assertCount(0, $this->testModel->getMediaCollections());
+        self::assertCount(3, $this->testModelWithCollections->getMediaCollections());
     }
 
     public function testCheckImageMediaCollectionsCount(): void
     {
-        $this->assertCount(0, $this->testModel->getMediaCollections()->filter->isImage());
-        $this->assertCount(1, $this->testModelWithCollections->getMediaCollections()->filter->isImage());
+        self::assertCount(0, $this->testModel->getMediaCollections()->filter->isImage());
+        self::assertCount(1, $this->testModelWithCollections->getMediaCollections()->filter->isImage());
     }
 
     public function testJustForDev(): void
@@ -40,8 +40,8 @@ class HasMediaCollectionsTest extends TestCase
         $this->testModel->addMediaCollection('documents');
         $this->testModel->addMediaCollection('video');
 
-        $this->assertCount(2, $this->testModel->getMediaCollections());
-        $this->assertCount(0, $this->testModel->getMedia());
+        self::assertCount(2, $this->testModel->getMediaCollections());
+        self::assertCount(0, $this->testModel->getMedia());
 
         $request = $this->getRequest([
             'documents' => [
@@ -77,17 +77,17 @@ class HasMediaCollectionsTest extends TestCase
         $this->testModel->processMedia(collect($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())));
         $this->testModel = $this->testModel->fresh();
 
-        $this->assertCount(2, $this->testModel->getMedia('documents'));
+        self::assertCount(2, $this->testModel->getMedia('documents'));
         $firstMedia = $this->testModel->getMedia('documents')->first();
-        $this->assertStringStartsWith('application/pdf', $firstMedia->mime_type);
+        self::assertStringStartsWith('application/pdf', $firstMedia->mime_type);
     }
 
     public function testUserCanRegisterNewFileCollectionAndUploadFiles(): void
     {
         $this->testModel->addMediaCollection('documents');
 
-        $this->assertCount(1, $this->testModel->getMediaCollections());
-        $this->assertCount(0, $this->testModel->getMedia());
+        self::assertCount(1, $this->testModel->getMediaCollections());
+        self::assertCount(0, $this->testModel->getMedia());
 
         $request = $this->getRequest([
             'documents' => [
@@ -113,9 +113,9 @@ class HasMediaCollectionsTest extends TestCase
         $this->testModel->processMedia(collect($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())));
         $this->testModel = $this->testModel->fresh();
 
-        $this->assertCount(2, $this->testModel->getMedia('documents'));
+        self::assertCount(2, $this->testModel->getMedia('documents'));
         $firstMedia = $this->testModel->getMedia('documents')->first();
-        $this->assertStringStartsWith('application/pdf', $firstMedia->mime_type);
+        self::assertStringStartsWith('application/pdf', $firstMedia->mime_type);
     }
 
     public function testMediaIsSavedAutomaticallyWhenModelIsSaved(): void
@@ -138,8 +138,8 @@ class HasMediaCollectionsTest extends TestCase
 
         $media = $this->app['db']->connection()->table('media')->first();
 
-        $this->assertStringStartsWith('test.pdf', $media->file_name);
-        $this->assertStringStartsWith('{"name":"test"}', $media->custom_properties);
+        self::assertStringStartsWith('test.pdf', $media->file_name);
+        self::assertStringStartsWith('{"name":"test"}', $media->custom_properties);
     }
 
     public function testMediaIsNotSavedAutomaticallyWhileModelIsSavedIfThisFeatureIsDisabled(): void
@@ -160,7 +160,7 @@ class HasMediaCollectionsTest extends TestCase
 
         $response->assertStatus(201);
 
-        $this->assertEmpty($this->app['db']->connection()->table('media')->first());
+        self::assertEmpty($this->app['db']->connection()->table('media')->first());
     }
 
     public function testUserCannotUploadNotAllowedFileTypes(): void
@@ -186,7 +186,7 @@ class HasMediaCollectionsTest extends TestCase
         $this->testModel->processMedia(collect($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())));
         $this->testModel = $this->testModel->fresh();
 
-        $this->assertCount(0, $this->testModel->getMedia('documents'));
+        self::assertCount(0, $this->testModel->getMedia('documents'));
     }
 
     public function testMultipleAllowedMimeTypesCanBeDefined(): void
@@ -210,7 +210,7 @@ class HasMediaCollectionsTest extends TestCase
         $this->testModel->processMedia(collect($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())));
         $this->testModel = $this->testModel->fresh();
 
-        $this->assertCount(1, $this->testModel->getMedia('documents'));
+        self::assertCount(1, $this->testModel->getMedia('documents'));
     }
 
     public function testUserCannotUploadMoreFilesThanAllowed(): void
@@ -252,7 +252,7 @@ class HasMediaCollectionsTest extends TestCase
         $this->testModel->processMedia(collect($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())));
         $this->testModel = $this->testModel->fresh();
 
-        $this->assertCount(0, $this->testModel->getMedia('documents'));
+        self::assertCount(0, $this->testModel->getMedia('documents'));
     }
 
     public function testUserCannotUploadMoreFilesThanIsAllowedInMultipleRequests(): void
@@ -286,7 +286,7 @@ class HasMediaCollectionsTest extends TestCase
         $this->testModel->processMedia(collect($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())));
         $this->testModel = $this->testModel->fresh();
         // let's be sure we arranged this test correctly (so this is not a real test assertion)
-        $this->assertCount(0, $this->testModel->getMediaCollections());
+        self::assertCount(0, $this->testModel->getMediaCollections());
 
         $this->testModel->addMediaCollection('documents')
                         ->maxNumberOfFiles(2);
@@ -308,7 +308,7 @@ class HasMediaCollectionsTest extends TestCase
         $this->testModel = $this->testModel->fresh();
 
         // finally we can assert
-        $this->assertCount(2, $this->testModel->getMedia('documents'));
+        self::assertCount(2, $this->testModel->getMedia('documents'));
         // TODO let's double-check that original two documents are attached (and not replaced by new one)
     }
 
@@ -342,7 +342,7 @@ class HasMediaCollectionsTest extends TestCase
         $this->testModel->processMedia(collect($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())));
         $this->testModel = $this->testModel->fresh();
 
-        $this->assertCount(2, $this->testModel->getMedia('documents'));
+        self::assertCount(2, $this->testModel->getMedia('documents'));
     }
 
     public function testUserCannotUploadFileExceedingMaxFileSize(): void
@@ -369,7 +369,7 @@ class HasMediaCollectionsTest extends TestCase
         $this->testModel->processMedia(collect($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())));
         $this->testModel = $this->testModel->fresh();
 
-        $this->assertCount(0, $this->testModel->getMedia('documents'));
+        self::assertCount(0, $this->testModel->getMedia('documents'));
     }
 
     public function testUserCanUploadFilesInMaxFileSize(): void
@@ -393,12 +393,12 @@ class HasMediaCollectionsTest extends TestCase
         $this->testModel->processMedia(collect($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())));
         $this->testModel = $this->testModel->fresh();
 
-        $this->assertCount(1, $this->testModel->getMedia('documents'));
+        self::assertCount(1, $this->testModel->getMedia('documents'));
     }
 
     public function testNotAuthorizedUserCanGetPublicMedia(): void
     {
-        $this->assertCount(0, $this->testModelWithCollections->getMedia('gallery'));
+        self::assertCount(0, $this->testModelWithCollections->getMedia('gallery'));
 
         $request = $this->getRequest([
             'gallery' => [
@@ -420,12 +420,12 @@ class HasMediaCollectionsTest extends TestCase
 
         $media = $this->testModelWithCollections->getMedia('gallery');
 
-        $this->assertCount(1, $media);
+        self::assertCount(1, $media);
 
         $response = $this->call('GET', $media->first()->getUrl());
 
         // let's assert that the access was not forbidden (but as long as we don't have a real nginx serving the file, we cannot actually get the file
-        $this->assertNotEquals(403, $response->getStatusCode());
+        self::assertNotEquals(403, $response->getStatusCode());
         // that's why we at least check if the final URL is correct
         // TODO
     }
@@ -433,7 +433,7 @@ class HasMediaCollectionsTest extends TestCase
     public function testNotAuthorizedUserCannotGetProtectedMedia(): void
     {
         $this->disableAuthorization();
-        $this->assertCount(0, $this->testModelWithCollections->getMedia('documents'));
+        self::assertCount(0, $this->testModelWithCollections->getMedia('documents'));
 
         $request = $this->getRequest([
              'documents' => [
@@ -453,7 +453,7 @@ class HasMediaCollectionsTest extends TestCase
 
         $media = $this->testModelWithCollections->getMedia('documents');
 
-        $this->assertCount(1, $media);
+        self::assertCount(1, $media);
 
         $response = $this->json('GET', $media->first()->getUrl());
 
@@ -540,7 +540,7 @@ class HasMediaCollectionsTest extends TestCase
         $this->testModel->processMedia(collect($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())));
         $this->testModel = $this->testModel->fresh();
         $media = $this->testModel->getMedia('documents');
-        $this->assertCount(2, $media);
+        self::assertCount(2, $media);
 
         $request = $this->getRequest([
             'documents' => [
@@ -562,8 +562,8 @@ class HasMediaCollectionsTest extends TestCase
         $this->testModel->processMedia(collect($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())));
         $this->testModel = $this->testModel->fresh();
         $media = $this->testModel->getMedia('documents');
-        $this->assertCount(1, $media);
-        $this->assertEquals('test.txt', $media->first()->file_name);
+        self::assertCount(1, $media);
+        self::assertEquals('test.txt', $media->first()->file_name);
     }
 
     public function testUserCanGetThumbs(): void
@@ -588,12 +588,12 @@ class HasMediaCollectionsTest extends TestCase
         $this->testModelWithCollections->processMedia(collect($request->only($this->testModelWithCollections->getMediaCollections()->map->getName()->toArray())));
         $this->testModelWithCollections = $this->testModelWithCollections->fresh()->load('media');
 
-        $this->assertCount(1, $this->testModelWithCollections->getThumbs200ForCollection('gallery'));
+        self::assertCount(1, $this->testModelWithCollections->getThumbs200ForCollection('gallery'));
     }
 
     public function testUserCanGetFileIfThumbsNotRegistered(): void
     {
-        $this->assertCount(0, $this->testModelWithCollections->getMedia('gallery'));
+        self::assertCount(0, $this->testModelWithCollections->getMedia('gallery'));
 
         $request = $this->getRequest([
             'documents' => [
@@ -616,19 +616,19 @@ class HasMediaCollectionsTest extends TestCase
 
     public function testSystemAutomaticallyDetectsImageCollectionBasedOnMimeType(): void
     {
-        $this->assertCount(1, $this->testModelWithCollections->getMediaCollections()->filter->isImage());
+        self::assertCount(1, $this->testModelWithCollections->getMediaCollections()->filter->isImage());
 
         //collection without mimetype is not image
         $this->testModelWithCollections->addMediaCollection('without_mime_type')->accepts('');
-        $this->assertCount(1, $this->testModelWithCollections->getMediaCollections()->filter->isImage());
+        self::assertCount(1, $this->testModelWithCollections->getMediaCollections()->filter->isImage());
 
         //collection with only image mimetypes is image
         $this->testModelWithCollections->addMediaCollection('image_mime_type')->accepts('image/jpeg', 'image/png');
-        $this->assertCount(2, $this->testModelWithCollections->getMediaCollections()->filter->isImage());
+        self::assertCount(2, $this->testModelWithCollections->getMediaCollections()->filter->isImage());
 
         //collection with mixed mimetypes is not image
         $this->testModelWithCollections->addMediaCollection('mixed_mime_type')->accepts('image/jpeg', 'application/pdf', 'application/msword');
-        $this->assertCount(2, $this->testModelWithCollections->getMediaCollections()->filter->isImage());
+        self::assertCount(2, $this->testModelWithCollections->getMediaCollections()->filter->isImage());
     }
 
     private function getRequest($data): Request

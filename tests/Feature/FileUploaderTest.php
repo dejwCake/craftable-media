@@ -24,7 +24,7 @@ class FileUploaderTest extends TestCase
 
     public function testUnauthorizedUserCannotUploadFile(): void
     {
-        $this->markTestSkipped('TODO');
+        self::markTestSkipped('TODO');
         //Todo finish
     }
 }
