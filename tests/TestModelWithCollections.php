@@ -1,6 +1,6 @@
 <?php
 
-namespace Brackets\Media\Test;
+namespace Brackets\Media\Tests;
 
 use Brackets\Media\HasMedia\AutoProcessMediaTrait;
 use Spatie\Image\Exceptions\InvalidManipulation;

@@ -1,15 +1,14 @@
 <?php
 
-namespace Brackets\Media\Test\Feature;
+namespace Brackets\Media\Tests\Feature;
 
-use Brackets\Media\Test\TestCase;
+use Brackets\Media\Tests\TestCase;
 use Illuminate\Http\UploadedFile;
 
 class FileUploaderTest extends TestCase
 {
 
-    /** @test */
-    public function a_user_can_upload_file(): void
+    public function testAUserCanUploadFile(): void
     {
         $this->disableAuthorization();
         $data = [
@@ -23,10 +22,9 @@ class FileUploaderTest extends TestCase
         $response->assertSee('psd');
     }
 
-//    /** @test */
-    public function unauthorized_user_cannot_upload_file()
+    public function testUnauthorizedUserCannotUploadFile(): void
     {
-//        TODO
-        return true;
+        $this->markTestSkipped('TODO');
+        //Todo finish
     }
 }

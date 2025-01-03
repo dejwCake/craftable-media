@@ -47,7 +47,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Brackets\\Media\\Test\\": "tests"
+            "Brackets\\Media\\Tests\\": "tests"
         }
     },
     "extra": {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Brackets\Media\Test;
+namespace Brackets\Media\Tests;
 
 use Spatie\Image\Exceptions\InvalidManipulation;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;

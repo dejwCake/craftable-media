@@ -1,6 +1,6 @@
 <?php
 
-namespace Brackets\Media\Test;
+namespace Brackets\Media\Tests;
 
 use Brackets\Media\MediaServiceProvider;
 use Brackets\Media\UrlGenerator\LocalUrlGenerator;
