@@ -1,8 +1,9 @@
-.DS_Store
-build
-docs
-vendor
-tests/temp
+/vendor
 composer.lock
+.idea/
+.DS_Store
 .phpunit.result.cache
 .phpunit.cache
+.phpcs.cache
+.phpstan.cache
+tests/temp
