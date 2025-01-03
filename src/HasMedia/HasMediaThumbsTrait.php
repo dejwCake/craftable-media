@@ -51,11 +51,11 @@ trait HasMediaThumbsTrait
         )->each(
             function (MediaCollection $mediaCollection): void {
                 $this->addMediaConversion('thumb_200')
+                    ->performOnCollections($mediaCollection->getName())
                     ->width(200)
                     ->height(200)
                     ->fit(Fit::Crop, 200, 200)
-                    ->optimize()
-                    ->performOnCollections($mediaCollection->getName());
+                    ->optimize();
             },
         );
     }

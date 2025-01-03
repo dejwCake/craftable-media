@@ -124,10 +124,10 @@ trait ProcessMediaTrait
         if ($mediaCollection->getMaxNumberOfFiles()) {
             $alreadyUploadedMediaCount = $this->getMedia($mediaCollection->getName())->count();
             $forAddMediaCount = $inputMediaForMediaCollection->filter(
-                static fn ($medium) => $medium['action'] === 'add',
+                static fn (array $medium) => $medium['action'] === 'add',
             )->count();
             $forDeleteMediaCount = $inputMediaForMediaCollection->filter(
-                static fn ($medium) => $medium['action'] === 'delete' ? 1 : 0,
+                static fn (array $medium) => $medium['action'] === 'delete',
             )->count();
             $afterUploadCount = $forAddMediaCount + $alreadyUploadedMediaCount - $forDeleteMediaCount;
 

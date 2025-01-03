@@ -17,7 +17,7 @@ class FileUploaderTest extends TestCase
             'path' => $this->getTestFilesDirectory('test.psd'),
         ];
         $file = new UploadedFile($data['path'], $data['name'], 'image/jpeg', null, true);
-        $response = $this->call('POST', 'upload', $data, [], ['file' => $file], [], []);
+        $response = $this->call('POST', 'upload', $data, [], ['file' => $file]);
 
         $response->assertStatus(200);
         $response->assertSee('psd');

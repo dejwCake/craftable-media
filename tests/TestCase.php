@@ -54,10 +54,12 @@ abstract class TestCase extends Orchestra
     }
 
     /**
+     * @param Application $app
      * @return array<class-string>
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
      */
-    protected function getPackageProviders(Application $app): array
+    protected function getPackageProviders($app): array
     {
         return [
             MediaLibraryServiceProvider::class,

@@ -34,6 +34,14 @@ class MediaCollection extends ParentMediaCollection
     }
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingAnyTypeHint
+     */
+    public static function create($name): self
+    {
+        return new self($name);
+    }
+
+    /**
      * Specify a disk where to store this collection
      *
      * @deprecated deprecated since version 3.0, remove in version 4.0
