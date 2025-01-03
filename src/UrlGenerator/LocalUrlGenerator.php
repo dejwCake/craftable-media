@@ -1,14 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Brackets\Media\UrlGenerator;
 
 use Spatie\MediaLibrary\Support\UrlGenerator\DefaultUrlGenerator as SpatieUrlGenerator;
 
 class LocalUrlGenerator extends SpatieUrlGenerator
 {
-    /**
-     * @return string
-     */
     public function getUrl(): string
     {
         if ($this->media->disk === 'media_private') {
@@ -22,7 +21,7 @@ class LocalUrlGenerator extends SpatieUrlGenerator
 
     protected function makeCompatibleForNonUnixHosts(string $url): string
     {
-        if (DIRECTORY_SEPARATOR != '/') {
+        if (DIRECTORY_SEPARATOR !== '/') {
             $url = str_replace(DIRECTORY_SEPARATOR, '/', $url);
         }
 

@@ -1,19 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'media' => [
         'driver' => 'local',
-        'root'   => public_path().'/media',
-        'url'   => env('APP_URL').'/media',
+        'root' => public_path() . '/media',
+        'url' => env('APP_URL') . '/media',
     ],
 
     'media_private' => [
         'driver' => 'local',
-        'root'   => storage_path().'/app/media',
+        'root' => storage_path() . '/app/media',
     ],
 
     'uploads' => [
         'driver' => 'local',
-        'root'   => storage_path('uploads'),
+        'root' => storage_path('uploads'),
     ],
 ];

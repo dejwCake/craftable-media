@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Brackets\Media\Tests;
 
 use Brackets\Media\HasMedia\AutoProcessMediaTrait;
@@ -12,13 +14,12 @@ class TestModelWithCollections extends TestModel
 
     /**
      * Media collections
-     *
      */
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('gallery')
              ->maxNumberOfFiles(20)
-             ->maxFilesize(2*1024*1024)
+             ->maxFilesize(2 * 1024 * 1024)
              ->accepts('image/*');
 
         $this->addMediaCollection('documents')
@@ -26,7 +27,7 @@ class TestModelWithCollections extends TestModel
              ->canView('vop.view')
              ->canUpload('vop.upload')
              ->maxNumberOfFiles(20)
-             ->maxFilesize(2*1024*1024)
+             ->maxFilesize(2 * 1024 * 1024)
              ->accepts('application/pdf', 'application/msword');
 
         $this->addMediaCollection('zip')
@@ -34,18 +35,17 @@ class TestModelWithCollections extends TestModel
             ->canView('vop.view')
             ->canUpload('vop.upload')
             ->maxNumberOfFiles(20)
-            ->maxFilesize(2*1024*1024)
+            ->maxFilesize(2 * 1024 * 1024)
             ->accepts('application/octet-stream');
     }
 
     /**
      * Register the conversions that should be performed.
      *
-     * @param null|Media $media
      * @throws InvalidManipulation
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
      */
-    public function registerMediaConversions(Media $media = null): void
+    public function registerMediaConversions(?Media $media = null): void
     {
         $this->autoRegisterThumb200();
 

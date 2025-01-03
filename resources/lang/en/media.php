@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'file' => [
         'not_provided' => 'File has not been provided.',

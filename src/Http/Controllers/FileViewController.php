@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Brackets\Media\Http\Controllers;
 
 use Brackets\Media\HasMedia\HasMediaCollectionsTrait;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -17,13 +18,15 @@ use Illuminate\Validation\ValidationException;
 use League\Flysystem\FilesystemException;
 use Spatie\MediaLibrary\MediaCollections\Models\Media as MediaModel;
 
+use function assert;
+
 class FileViewController extends BaseController
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    use AuthorizesRequests;
+    use DispatchesJobs;
+    use ValidatesRequests;
 
     /**
-     * @param Request $request
-     * @return Response|null
      * @throws AuthorizationException
      * @throws ValidationException
      * @throws FilesystemException
@@ -31,23 +34,25 @@ class FileViewController extends BaseController
     public function view(Request $request): ?Response
     {
         $this->validate($request, [
-            'path' => 'required|string'
+            'path' => 'required|string',
         ]);
 
-        list($fileId) = explode('/', $request->get('path'), 2);
+        [$fileId] = explode('/', $request->get('path'), 2);
 
-        if ($medium = app(MediaModel::class)->find($fileId)) {
+        $medium = app(MediaModel::class)->find($fileId);
+        if ($medium !== null) {
+            $model = $medium->model;
+            // PHPStorm sees it as an error - Spatie should fix this using PHPDoc
+            assert($model instanceof HasMediaCollectionsTrait);
 
-            /** @var HasMediaCollectionsTrait $model */
-            $model = $medium->model; // PHPStorm sees it as an error - Spatie should fix this using PHPDoc
-
-            if ($mediaCollection = $model->getMediaCollection($medium->collection_name)) {
+            $mediaCollection = $model->getMediaCollection($medium->collection_name);
+            if ($mediaCollection !== null) {
                 if ($mediaCollection->getViewPermission()) {
-                    $this->authorize($mediaCollection->getViewPermission(), [ $model ]);
+                    $this->authorize($mediaCollection->getViewPermission(), [$model]);
                 }
 
                 $storagePath = $request->get('path');
-                $fileSystem  = Storage::disk($mediaCollection->getDisk());
+                $fileSystem = Storage::disk($mediaCollection->getDisk());
 
                 if (! $fileSystem->exists($storagePath)) {
                     abort(404);
@@ -55,7 +60,7 @@ class FileViewController extends BaseController
 
                 return ResponseFacade::make($fileSystem->get($storagePath), 200, [
                     'Content-Type' => $fileSystem->mimeType($storagePath),
-                    'Content-Disposition' => 'inline; filename="' . basename($request->get('path')) . '"'
+                    'Content-Disposition' => 'inline; filename="' . basename($request->get('path')) . '"',
                 ]);
             }
         }

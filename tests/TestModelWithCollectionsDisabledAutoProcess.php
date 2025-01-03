@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Brackets\Media\Tests;
 
 use Spatie\Image\Exceptions\InvalidManipulation;
@@ -9,7 +11,6 @@ class TestModelWithCollectionsDisabledAutoProcess extends TestModel
 {
     /**
      * Media collections
-     *
      */
     public function registerMediaCollections(): void
     {
@@ -38,11 +39,10 @@ class TestModelWithCollectionsDisabledAutoProcess extends TestModel
     /**
      * Register the conversions that should be performed.
      *
-     * @param null|Media $media
      * @throws InvalidManipulation
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
      */
-    public function registerMediaConversions(Media $media = null): void
+    public function registerMediaConversions(?Media $media = null): void
     {
         $this->autoRegisterThumb200();
 

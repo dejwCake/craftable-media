@@ -1,31 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Brackets\Media\Tests;
 
 use Brackets\Media\MediaServiceProvider;
 use Brackets\Media\UrlGenerator\LocalUrlGenerator;
-use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Auth\User;
-use Illuminate\Foundation\Exceptions\Handler;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Throwable;
 use Spatie\MediaLibrary\MediaLibraryServiceProvider;
 
 abstract class TestCase extends Orchestra
 {
     use RefreshDatabase;
 
-    /** @var TestModel */
     protected TestModel $testModel;
 
-    /** @var TestModelWithCollections */
     protected TestModelWithCollections $testModelWithCollections;
 
     public function setUp(): void
@@ -39,33 +36,28 @@ abstract class TestCase extends Orchestra
         $this->testModelWithCollections = TestModelWithCollections::first();
 
         // let's define simple routes
-        $this->app['router']->post('/test-model/create', function (Request $request) {
+        $this->app['router']->post('/test-model/create', static function (Request $request) {
             $sanitized = $request->only([
                 'name',
             ]);
 
-            $testModel = TestModelWithCollections::create($sanitized);
-
-            return $testModel;
+            return TestModelWithCollections::create($sanitized);
         });
 
-        $this->app['router']->post('/test-model-disabled/create', function (Request $request) {
+        $this->app['router']->post('/test-model-disabled/create', static function (Request $request) {
             $sanitized = $request->only([
                 'name',
             ]);
 
-            $testModel = TestModelWithCollectionsDisabledAutoProcess::create($sanitized);
-
-            return $testModel;
+            return TestModelWithCollectionsDisabledAutoProcess::create($sanitized);
         });
     }
 
     /**
-     * @param Application $app
-     *
      * @return array<class-string>
+     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
      */
-    protected function getPackageProviders($app): array
+    protected function getPackageProviders(Application $app): array
     {
         return [
             MediaLibraryServiceProvider::class,
@@ -147,24 +139,17 @@ abstract class TestCase extends Orchestra
         $app['config']->set('media-library.url_generator', LocalUrlGenerator::class);
 
         // FIXME these config setting needs to have a look
-        $app->bind('path.public', function () {
-            return $this->getTempDirectory();
-        });
+        $app->bind('path.public', fn () => $this->getTempDirectory());
 
         // FIXME these config setting needs to have a look
-        $app->bind('path.storage', function () {
-            return $this->getTempDirectory();
-        });
+        $app->bind('path.storage', fn () => $this->getTempDirectory());
 
         $app['config']->set('app.key', '6rE9Nz59bGRbeMATftriyQjrpF7DcOQm');
     }
 
-    /**
-     * @param Application $app
-     */
     protected function setUpDatabase(Application $app): void
     {
-        $app['db']->connection()->getSchemaBuilder()->create('test_models', function (Blueprint $table) {
+        $app['db']->connection()->getSchemaBuilder()->create('test_models', static function (Blueprint $table): void {
             $table->increments('id');
             $table->string('name');
             $table->integer('width')->nullable();
@@ -172,7 +157,7 @@ abstract class TestCase extends Orchestra
 
         TestModel::create(['name' => 'test']);
 
-        Schema::create('media', function (Blueprint $table) {
+        Schema::create('media', static function (Blueprint $table): void {
             $table->id();
 
             $table->morphs('model');
@@ -211,37 +196,21 @@ abstract class TestCase extends Orchestra
         File::makeDirectory($directory);
     }
 
-    /**
-     * @param string $suffix
-     * @return string
-     */
     public function getTempDirectory(string $suffix = ''): string
     {
         return __DIR__ . '/temp' . ($suffix === '' ? '' : '/' . $suffix);
     }
 
-    /**
-     * @param string $suffix
-     * @return string
-     */
     public function getMediaDirectory(string $suffix = ''): string
     {
         return $this->getTempDirectory('media') . ($suffix === '' ? '' : '/' . $suffix);
     }
 
-    /**
-     * @param string $suffix
-     * @return string
-     */
     public function getUploadsDirectory(string $suffix = ''): string
     {
         return $this->getTempDirectory('uploads') . ($suffix === '' ? '' : '/' . $suffix);
     }
 
-    /**
-     * @param string $suffix
-     * @return string
-     */
     public function getTestFilesDirectory(string $suffix = ''): string
     {
         return $this->getTempDirectory('app') . ($suffix === '' ? '' : '/' . $suffix);
@@ -252,12 +221,10 @@ abstract class TestCase extends Orchestra
      */
     public function disableAuthorization(): void
     {
-        $this->actingAs(new User, 'admin');
-        Gate::define('admin', static function ($user) {
-            return true;
-        });
-        Gate::define('admin.upload', static function ($user) {
-            return true;
-        });
+        $this->actingAs(new User(), 'admin');
+        //phpcs:ignore SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+        Gate::define('admin', static fn ($user) => true);
+        //phpcs:ignore SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+        Gate::define('admin.upload', static fn ($user) => true);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Brackets\Media\HasMedia;
 
 use Illuminate\Support\Collection;
@@ -13,12 +15,8 @@ trait HasMediaCollectionsTrait
      * Register new Media Collection
      *
      * Adds new collection to model and set its name.
-     *
-     * @param $name
-     *
-     * @return MediaCollection
      */
-    public function addMediaCollection($name): MediaCollection
+    public function addMediaCollection(string $name): MediaCollection
     {
         $mediaCollection = MediaCollection::create($name);
 
@@ -29,8 +27,6 @@ trait HasMediaCollectionsTrait
 
     /**
      * Returns a collection of Media Collections
-     *
-     * @return Collection
      */
     public function getMediaCollections(): Collection
     {
@@ -43,12 +39,8 @@ trait HasMediaCollectionsTrait
      * Returns a Media Collection according to the name
      *
      * If Media Collection was not registered on this model, null is returned
-     *
-     * @param $name
-     *
-     * @return MediaCollection|null
      */
-    public function getMediaCollection($name): ?MediaCollection
+    public function getMediaCollection(string $name): ?MediaCollection
     {
         return $this->getMediaCollections()->get($name);
     }

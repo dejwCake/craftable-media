@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Brackets\Media\Tests\Feature;
 
 use Brackets\Media\Exceptions\FileCannotBeAdded\FileIsTooBig;
 use Brackets\Media\Exceptions\FileCannotBeAdded\TooManyFiles;
-
 use Brackets\Media\Tests\TestCase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -12,7 +13,6 @@ use Spatie\MediaLibrary\MediaCollections\Exceptions\MimeTypeNotAllowed;
 
 class HasMediaCollectionsTest extends TestCase
 {
-
     public function testEmptyCollectionReturnsLaravelCollection(): void
     {
         self::assertInstanceOf(Collection::class, $this->testModel->getMediaCollections());
@@ -60,7 +60,7 @@ class HasMediaCollectionsTest extends TestCase
                     'meta_data' => [
                         'name' => 'test',
                     ],
-                ]
+                ],
             ],
             'video' => [
                 [
@@ -70,11 +70,13 @@ class HasMediaCollectionsTest extends TestCase
                     'meta_data' => [
                         'name' => 'video test',
                     ],
-                ]
-            ]
+                ],
+            ],
         ]);
 
-        $this->testModel->processMedia(new Collection($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())));
+        $this->testModel->processMedia(
+            new Collection($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())),
+        );
         $this->testModel = $this->testModel->fresh();
 
         self::assertCount(2, $this->testModel->getMedia('documents'));
@@ -106,11 +108,13 @@ class HasMediaCollectionsTest extends TestCase
                     'meta_data' => [
                         'name' => 'test',
                     ],
-                ]
+                ],
             ],
         ]);
 
-        $this->testModel->processMedia(new Collection($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())));
+        $this->testModel->processMedia(
+            new Collection($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())),
+        );
         $this->testModel = $this->testModel->fresh();
 
         self::assertCount(2, $this->testModel->getMedia('documents'));
@@ -130,7 +134,7 @@ class HasMediaCollectionsTest extends TestCase
                     'meta_data' => [
                         'name' => 'test',
                     ],
-                ]
+                ],
             ],
         ]);
 
@@ -154,7 +158,7 @@ class HasMediaCollectionsTest extends TestCase
                     'meta_data' => [
                         'name' => 'test',
                     ],
-                ]
+                ],
             ],
         ]);
 
@@ -179,11 +183,13 @@ class HasMediaCollectionsTest extends TestCase
                     'meta_data' => [
                         'name' => 'test',
                     ],
-                ]
+                ],
             ],
         ]);
 
-        $this->testModel->processMedia(new Collection($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())));
+        $this->testModel->processMedia(
+            new Collection($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())),
+        );
         $this->testModel = $this->testModel->fresh();
 
         self::assertCount(0, $this->testModel->getMedia('documents'));
@@ -203,11 +209,13 @@ class HasMediaCollectionsTest extends TestCase
                     'meta_data' => [
                         'name' => 'test',
                     ],
-                ]
+                ],
             ],
         ]);
 
-        $this->testModel->processMedia(new Collection($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())));
+        $this->testModel->processMedia(
+            new Collection($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())),
+        );
         $this->testModel = $this->testModel->fresh();
 
         self::assertCount(1, $this->testModel->getMedia('documents'));
@@ -249,7 +257,9 @@ class HasMediaCollectionsTest extends TestCase
             ],
         ]);
 
-        $this->testModel->processMedia(new Collection($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())));
+        $this->testModel->processMedia(
+            new Collection($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())),
+        );
         $this->testModel = $this->testModel->fresh();
 
         self::assertCount(0, $this->testModel->getMedia('documents'));
@@ -283,7 +293,9 @@ class HasMediaCollectionsTest extends TestCase
             ],
         ]);
 
-        $this->testModel->processMedia(new Collection($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())));
+        $this->testModel->processMedia(
+            new Collection($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())),
+        );
         $this->testModel = $this->testModel->fresh();
         // let's be sure we arranged this test correctly (so this is not a real test assertion)
         self::assertCount(0, $this->testModel->getMediaCollections());
@@ -291,7 +303,7 @@ class HasMediaCollectionsTest extends TestCase
         $this->testModel->addMediaCollection('documents')
                         ->maxNumberOfFiles(2);
 
-        $request2 = $this->getRequest([
+        $this->getRequest([
             'documents' => [
                 [
                     'collection_name' => 'documents',
@@ -304,7 +316,9 @@ class HasMediaCollectionsTest extends TestCase
             ],
         ]);
 
-        $this->testModel->processMedia(new Collection($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())));
+        $this->testModel->processMedia(
+            new Collection($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())),
+        );
         $this->testModel = $this->testModel->fresh();
 
         // finally we can assert
@@ -339,7 +353,9 @@ class HasMediaCollectionsTest extends TestCase
             ],
         ]);
 
-        $this->testModel->processMedia(new Collection($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())));
+        $this->testModel->processMedia(
+            new Collection($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())),
+        );
         $this->testModel = $this->testModel->fresh();
 
         self::assertCount(2, $this->testModel->getMedia('documents'));
@@ -350,7 +366,8 @@ class HasMediaCollectionsTest extends TestCase
         $this->expectException(FileIsTooBig::class);
 
         $this->testModel->addMediaCollection('documents')
-                        ->maxFilesize(100*1024); //100kb
+                        //100kb
+                        ->maxFilesize(100 * 1024);
 
 
         $request = $this->getRequest([
@@ -366,7 +383,9 @@ class HasMediaCollectionsTest extends TestCase
             ],
         ]);
 
-        $this->testModel->processMedia(new Collection($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())));
+        $this->testModel->processMedia(
+            new Collection($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())),
+        );
         $this->testModel = $this->testModel->fresh();
 
         self::assertCount(0, $this->testModel->getMedia('documents'));
@@ -375,7 +394,8 @@ class HasMediaCollectionsTest extends TestCase
     public function testUserCanUploadFilesInMaxFileSize(): void
     {
         $this->testModel->addMediaCollection('documents')
-                        ->maxFilesize(1*1024); //1kb
+                        //1kb
+                        ->maxFilesize(1 * 1024);
 
         $request = $this->getRequest([
             'documents' => [
@@ -390,7 +410,9 @@ class HasMediaCollectionsTest extends TestCase
             ],
         ]);
 
-        $this->testModel->processMedia(new Collection($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())));
+        $this->testModel->processMedia(
+            new Collection($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())),
+        );
         $this->testModel = $this->testModel->fresh();
 
         self::assertCount(1, $this->testModel->getMedia('documents'));
@@ -408,14 +430,18 @@ class HasMediaCollectionsTest extends TestCase
                     'action' => 'add',
                     'meta_data' => [
                         'name' => 'test 1',
-                        'width'      => 200,
-                        'height'     => 200,
+                        'width' => 200,
+                        'height' => 200,
                     ],
                 ],
             ],
         ]);
 
-        $this->testModelWithCollections->processMedia(new Collection($request->only($this->testModelWithCollections->getMediaCollections()->map->getName()->toArray())));
+        $this->testModelWithCollections->processMedia(
+            new Collection(
+                $request->only($this->testModelWithCollections->getMediaCollections()->map->getName()->toArray()),
+            ),
+        );
         $this->testModelWithCollections = $this->testModelWithCollections->fresh()->load('media');
 
         $media = $this->testModelWithCollections->getMedia('gallery');
@@ -424,7 +450,8 @@ class HasMediaCollectionsTest extends TestCase
 
         $response = $this->call('GET', $media->first()->getUrl());
 
-        // let's assert that the access was not forbidden (but as long as we don't have a real nginx serving the file, we cannot actually get the file
+        // let's assert that the access was not forbidden
+        // (but as long as we don't have a real nginx serving the file, we cannot actually get the file
         self::assertNotEquals(403, $response->getStatusCode());
         // that's why we at least check if the final URL is correct
         // TODO
@@ -448,7 +475,11 @@ class HasMediaCollectionsTest extends TestCase
              ],
         ]);
 
-        $this->testModelWithCollections->processMedia(new Collection($request->only($this->testModelWithCollections->getMediaCollections()->map->getName()->toArray())));
+        $this->testModelWithCollections->processMedia(
+            new Collection(
+                $request->only($this->testModelWithCollections->getMediaCollections()->map->getName()->toArray()),
+            ),
+        );
         $this->testModelWithCollections = $this->testModelWithCollections->fresh();
 
         $media = $this->testModelWithCollections->getMedia('documents');
@@ -478,7 +509,10 @@ class HasMediaCollectionsTest extends TestCase
 
         $response->assertStatus(201);
 
-        $this->assertDatabaseHas($this->testModelWithCollections->getTable(), [ 'id' => 2, 'name' => 'Test small file', 'width' => null ]);
+        $this->assertDatabaseHas(
+            $this->testModelWithCollections->getTable(),
+            ['id' => 2, 'name' => 'Test small file', 'width' => null],
+        );
     }
 
     public function testShouldNotSaveModelIfMediaFailedInAutoProcess(): void
@@ -499,7 +533,10 @@ class HasMediaCollectionsTest extends TestCase
 
         $response->assertStatus(500);
 
-        $this->assertDatabaseMissing($this->testModelWithCollections->getTable(), [ 'id' => 1, 'name' => 'Test big file', 'width' => null ]);
+        $this->assertDatabaseMissing(
+            $this->testModelWithCollections->getTable(),
+            ['id' => 1, 'name' => 'Test big file', 'width' => null],
+        );
     }
 
     //FIXME With spatie collection, you can have multiple collection with same name
@@ -537,7 +574,9 @@ class HasMediaCollectionsTest extends TestCase
             ],
         ]);
 
-        $this->testModel->processMedia(new Collection($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())));
+        $this->testModel->processMedia(
+            new Collection($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())),
+        );
         $this->testModel = $this->testModel->fresh();
         $media = $this->testModel->getMedia('documents');
         self::assertCount(2, $media);
@@ -552,14 +591,16 @@ class HasMediaCollectionsTest extends TestCase
                     'meta_data' => [
                         'name' => 'test 1',
                     ],
-                ]
+                ],
             ],
         ]);
 
         $this->testModel->addMediaCollection('documents')
             ->maxNumberOfFiles(2);
 
-        $this->testModel->processMedia(new Collection($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())));
+        $this->testModel->processMedia(
+            new Collection($request->only($this->testModel->getMediaCollections()->map->getName()->toArray())),
+        );
         $this->testModel = $this->testModel->fresh();
         $media = $this->testModel->getMedia('documents');
         self::assertCount(1, $media);
@@ -578,14 +619,18 @@ class HasMediaCollectionsTest extends TestCase
                     'action' => 'add',
                     'meta_data' => [
                         'name' => 'test 1',
-                        'width'      => 200,
-                        'height'     => 200,
+                        'width' => 200,
+                        'height' => 200,
                     ],
                 ],
             ],
         ]);
 
-        $this->testModelWithCollections->processMedia(new Collection($request->only($this->testModelWithCollections->getMediaCollections()->map->getName()->toArray())));
+        $this->testModelWithCollections->processMedia(
+            new Collection(
+                $request->only($this->testModelWithCollections->getMediaCollections()->map->getName()->toArray()),
+            ),
+        );
         $this->testModelWithCollections = $this->testModelWithCollections->fresh()->load('media');
 
         self::assertCount(1, $this->testModelWithCollections->getThumbs200ForCollection('gallery'));
@@ -608,7 +653,11 @@ class HasMediaCollectionsTest extends TestCase
             ],
         ]);
 
-        $this->testModelWithCollections->processMedia(new Collection($request->only($this->testModelWithCollections->getMediaCollections()->map->getName()->toArray())));
+        $this->testModelWithCollections->processMedia(
+            new Collection(
+                $request->only($this->testModelWithCollections->getMediaCollections()->map->getName()->toArray()),
+            ),
+        );
         $this->testModelWithCollections = $this->testModelWithCollections->fresh()->load('media');
 
         $this->assertCount(1, $this->testModelWithCollections->getThumbs200ForCollection('documents'));
@@ -627,11 +676,15 @@ class HasMediaCollectionsTest extends TestCase
         self::assertCount(2, $this->testModelWithCollections->getMediaCollections()->filter->isImage());
 
         //collection with mixed mimetypes is not image
-        $this->testModelWithCollections->addMediaCollection('mixed_mime_type')->accepts('image/jpeg', 'application/pdf', 'application/msword');
+        $this->testModelWithCollections->addMediaCollection('mixed_mime_type')->accepts(
+            'image/jpeg',
+            'application/pdf',
+            'application/msword',
+        );
         self::assertCount(2, $this->testModelWithCollections->getMediaCollections()->filter->isImage());
     }
 
-    private function getRequest($data): Request
+    private function getRequest(array $data): Request
     {
         return Request::create('test', 'GET', $data);
     }

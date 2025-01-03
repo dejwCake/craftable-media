@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Brackets\Media\Tests;
 
 use Brackets\Media\HasMedia\HasMediaCollectionsTrait;
@@ -35,19 +37,19 @@ class TestModel extends Model implements HasMedia
 
     /**
      * Media collections
-     *
      */
     public function registerMediaCollections(): void
     {
+        //do nothing
     }
 
     /**
      * Register the conversions that should be performed.
      *
-     * @param Media|null $media
      * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
      */
-    public function registerMediaConversions(Media $media = null): void
+    public function registerMediaConversions(?Media $media = null): void
     {
+        //do nothing
     }
 }

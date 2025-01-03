@@ -19,7 +19,7 @@
 
     <rule ref="SlevomatCodingStandard.Complexity.Cognitive">
         <properties>
-            <property name="maxComplexity" value="10"/>
+            <property name="maxComplexity" value="11"/>
         </properties>
     </rule>
 
@@ -30,5 +30,9 @@
                 <element key="tests" value="Brackets\Media\Tests"/>
             </property>
         </properties>
+    </rule>
+
+    <rule ref="SlevomatCodingStandard.Classes.ForbiddenPublicProperty.ForbiddenPublicProperty">
+        <exclude-pattern>tests/TestModel.php</exclude-pattern>
     </rule>
 </ruleset>

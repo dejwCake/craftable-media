@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Brackets\Media\HasMedia;
 
 use Brackets\Media\Exceptions\FileCannotBeAdded\FileIsTooBig;
@@ -12,11 +14,10 @@ use Spatie\MediaLibrary\MediaCollections\Exceptions\FileCannotBeAdded;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig as SpatieFileIsTooBig;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\MimeTypeNotAllowed;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\MediaLibrary\MediaCollections\Models\Media as MediaModel;
 
 /**
- * @property-read boolean $autoProcessMedia
+ * @property-read bool $autoProcessMedia
  */
 trait ProcessMediaTrait
 {
@@ -45,24 +46,23 @@ trait ProcessMediaTrait
      *
      * Firstly it validates input for max files count for mediaCollection, ile mimetype and file size, amd if the
      * validation passes it will add/change/delete media object to model
-     *
-     * @param Collection $inputMedia
      */
     public function processMedia(Collection $inputMedia): void
     {
-//        Don't we want to use maybe some class to represent the data structure?
-//        Maybe what we want is a MediumOperation class, which holds {collection name, operation (detach, attach, replace), metadata, filepath)} what do you think?
+        //Don't we want to use maybe some class to represent the data structure?
+        //Maybe what we want is a MediumOperation class, which holds
+        //{collection name, operation (detach, attach, replace), metadata, filepath)} what do you think?
 
         //First validate input
-        $this->getMediaCollections()->each(function ($mediaCollection) use ($inputMedia) {
+        $this->getMediaCollections()->each(function ($mediaCollection) use ($inputMedia): void {
             $this->validate(new Collection($inputMedia->get($mediaCollection->getName())), $mediaCollection);
         });
 
         //Then process each media
-        $this->getMediaCollections()->each(function ($mediaCollection) use ($inputMedia) {
+        $this->getMediaCollections()->each(function ($mediaCollection) use ($inputMedia): void {
             (new Collection($inputMedia->get($mediaCollection->getName())))->each(function ($inputMedium) use (
-                $mediaCollection
-            ) {
+                $mediaCollection,
+            ): void {
                 $this->processMedium($inputMedium, $mediaCollection);
             });
         });
@@ -71,15 +71,14 @@ trait ProcessMediaTrait
     /**
      * Process single file metadata add/edit/delete to media library
      *
-     * @param array $inputMedium
-     * @param MediaCollection $mediaCollection
      * @throws FileDoesNotExist
      * @throws SpatieFileIsTooBig
      */
     public function processMedium(array $inputMedium, MediaCollection $mediaCollection): void
     {
         if (isset($inputMedium['id']) && $inputMedium['id']) {
-            if ($medium = app(MediaModel::class)->find($inputMedium['id'])) {
+            $medium = app(MediaModel::class)->find($inputMedium['id']);
+            if ($medium !== null) {
                 if (isset($inputMedium['action']) && $inputMedium['action'] === 'delete') {
                     $medium->delete();
                 } else {
@@ -99,14 +98,12 @@ trait ProcessMediaTrait
     /**
      * Validate input data for media
      *
-     * @param Collection $inputMediaForMediaCollection
-     * @param MediaCollection $mediaCollection
      * @throws FileCannotBeAdded
      */
     public function validate(Collection $inputMediaForMediaCollection, MediaCollection $mediaCollection): void
     {
         $this->validateCollectionMediaCount($inputMediaForMediaCollection, $mediaCollection);
-        $inputMediaForMediaCollection->each(function ($inputMedium) use ($mediaCollection) {
+        $inputMediaForMediaCollection->each(function ($inputMedium) use ($mediaCollection): void {
             if ($inputMedium['action'] === 'add') {
                 $mediumFileFullPath = Storage::disk('uploads')->path($inputMedium['path']);
                 $this->validateTypeOfFile($mediumFileFullPath, $mediaCollection);
@@ -118,23 +115,21 @@ trait ProcessMediaTrait
     /**
      * Validate uploaded files count in collection
      *
-     * @param Collection $inputMediaForMediaCollection
-     * @param MediaCollection $mediaCollection
      * @throws TooManyFiles
      */
     public function validateCollectionMediaCount(
         Collection $inputMediaForMediaCollection,
-        MediaCollection $mediaCollection
+        MediaCollection $mediaCollection,
     ): void {
         if ($mediaCollection->getMaxNumberOfFiles()) {
             $alreadyUploadedMediaCount = $this->getMedia($mediaCollection->getName())->count();
-            $forAddMediaCount = $inputMediaForMediaCollection->filter(static function ($medium) {
-                return $medium['action'] === 'add';
-            })->count();
-            $forDeleteMediaCount = $inputMediaForMediaCollection->filter(static function ($medium) {
-                return $medium['action'] === 'delete' ? 1 : 0;
-            })->count();
-            $afterUploadCount = ($forAddMediaCount + $alreadyUploadedMediaCount - $forDeleteMediaCount);
+            $forAddMediaCount = $inputMediaForMediaCollection->filter(
+                static fn ($medium) => $medium['action'] === 'add',
+            )->count();
+            $forDeleteMediaCount = $inputMediaForMediaCollection->filter(
+                static fn ($medium) => $medium['action'] === 'delete' ? 1 : 0,
+            )->count();
+            $afterUploadCount = $forAddMediaCount + $alreadyUploadedMediaCount - $forDeleteMediaCount;
 
             if ($afterUploadCount > $mediaCollection->getMaxNumberOfFiles()) {
                 throw TooManyFiles::create($mediaCollection->getMaxNumberOfFiles(), $mediaCollection->getName());
@@ -145,8 +140,6 @@ trait ProcessMediaTrait
     /**
      * Validate uploaded file mime type
      *
-     * @param string $mediumFileFullPath
-     * @param MediaCollection $mediaCollection
      * @throws MimeTypeNotAllowed
      */
     public function validateTypeOfFile(string $mediumFileFullPath, MediaCollection $mediaCollection): void
@@ -159,8 +152,6 @@ trait ProcessMediaTrait
     /**
      * Validate uploaded file size
      *
-     * @param string $mediumFileFullPath
-     * @param MediaCollection $mediaCollection
      * @throws FileIsTooBig
      */
     public function validateSize(string $mediumFileFullPath, MediaCollection $mediaCollection): void
@@ -169,7 +160,7 @@ trait ProcessMediaTrait
             $this->guardAgainstFileSizeLimit(
                 $mediumFileFullPath,
                 $mediaCollection->getMaxFileSize(),
-                $mediaCollection->getName()
+                $mediaCollection->getName(),
             );
         }
     }
@@ -177,16 +168,13 @@ trait ProcessMediaTrait
     /**
      * maybe this could be PR to spatie/laravel-medialibrary
      *
-     * @param string $filePath
-     * @param float $maxFileSize
-     * @param string $name
      * @throws FileIsTooBig
      */
     protected function guardAgainstFileSizeLimit(string $filePath, float $maxFileSize, string $name): void
     {
         $validation = Validator::make(
             ['file' => new File($filePath)],
-            ['file' => 'max:' . round($maxFileSize / 1024)]
+            ['file' => 'max:' . round($maxFileSize / 1024)],
         );
 
         if ($validation->fails()) {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Brackets\Media\HasMedia;
 
 use Illuminate\Support\Collection;
@@ -7,46 +9,36 @@ use Spatie\MediaLibrary\MediaCollections\MediaCollection as ParentMediaCollectio
 
 class MediaCollection extends ParentMediaCollection
 {
-    /** @var bool */
     protected bool $isImage = false;
-    
-    /** @var int|null */
+
     protected ?int $maxNumberOfFiles = null;
-    
-    /** @var int */
+
     protected int $maxFileSize;
-    
+
     /** @var array<string>|null */
     protected ?array $acceptedFileTypes = null;
-    
-    /** @var string|null */
+
     protected ?string $viewPermission = null;
-    
-    /** @var string|null */
+
     protected ?string $uploadPermission = null;
 
     /**
      * MediaCollection constructor.
-     *
-     * @param string $name
      */
     public function __construct(string $name)
     {
         parent::__construct($name);
 
         $this->diskName = config('media-collections.public_disk', 'media');
-        $this->maxFileSize = config('media-library.max_file_size', 1024*1024*10);
+        $this->maxFileSize = config('media-library.max_file_size', 1024 * 1024 * 10);
     }
-
 
     /**
      * Specify a disk where to store this collection
      *
-     * @param $disk
-     * @return $this
      * @deprecated deprecated since version 3.0, remove in version 4.0
      */
-    public function disk($disk): self
+    public function disk(string $disk): self
     {
         $this->diskName = $disk;
 
@@ -68,8 +60,6 @@ class MediaCollection extends ParentMediaCollection
     /**
      * Set the file count limit
      *
-     * @param int $maxNumberOfFiles
-     *
      * @return $this
      */
     public function maxNumberOfFiles(int $maxNumberOfFiles): self
@@ -81,8 +71,6 @@ class MediaCollection extends ParentMediaCollection
 
     /**
      * Set the file size limit
-     *
-     * @param int $maxFileSize
      *
      * @return $this
      */
@@ -102,9 +90,9 @@ class MediaCollection extends ParentMediaCollection
     {
         $this->acceptedFileTypes = $acceptedFileTypes;
         if ((new Collection($this->acceptedFileTypes))->count() > 0) {
-            $this->isImage = (new Collection($this->acceptedFileTypes))->reject(static function ($fileType) {
-                return str_starts_with($fileType, 'image');
-            })->count() === 0;
+            $this->isImage = (new Collection($this->acceptedFileTypes))->reject(
+                static fn ($fileType) => str_starts_with($fileType, 'image'),
+            )->count() === 0;
         }
 
         return $this;
@@ -116,8 +104,6 @@ class MediaCollection extends ParentMediaCollection
      * In most cases you would want to call private() to use default private disk.
      *
      * Otherwise, you may use other private disk for your own. Just be sure, your file is not accessible
-     *
-     * @param string $viewPermission
      *
      * @return $this
      */
@@ -131,8 +117,6 @@ class MediaCollection extends ParentMediaCollection
     /**
      * Set the ability (Gate) which is required to upload & attach new files to the model
      *
-     * @param string $uploadPermission
-     *
      * @return $this
      */
     public function canUpload(string $uploadPermission): self
@@ -142,47 +126,33 @@ class MediaCollection extends ParentMediaCollection
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isImage(): bool
     {
         return $this->isImage;
     }
 
-    //FIXME: metoda disk by mohla mat druhy nepovinny paramater private, ktory len nastavi interny flag na true. Aby sme vedeli presnejsie ci ide o private alebo nie
+    //FIXME: metoda disk by mohla mat druhy nepovinny paramater private,
+    // ktory len nastavi interny flag na true. Aby sme vedeli presnejsie ci ide o private alebo nie
     public function isPrivate(): bool
     {
         return $this->diskName === config('media-collections.private_disk');
     }
 
-    /**
-     * @return string|null
-     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @return string|null
-     */
     public function getDisk(): ?string
     {
         return $this->diskName;
     }
 
-    /**
-     * @return int|null
-     */
     public function getMaxNumberOfFiles(): ?int
     {
         return $this->maxNumberOfFiles;
     }
 
-    /**
-     * @return int|null
-     */
     public function getMaxFileSize(): ?int
     {
         return $this->maxFileSize;
@@ -196,17 +166,11 @@ class MediaCollection extends ParentMediaCollection
         return $this->acceptedFileTypes;
     }
 
-    /**
-     * @return string|null
-     */
     public function getViewPermission(): ?string
     {
         return $this->viewPermission;
     }
 
-    /**
-     * @return string|null
-     */
     public function getUploadPermission(): ?string
     {
         return $this->uploadPermission;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Brackets\Media\Http\Controllers;
 
 use Illuminate\Auth\Access\AuthorizationException;
@@ -12,12 +14,12 @@ use Illuminate\Routing\Controller as BaseController;
 
 class FileUploadController extends BaseController
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    use AuthorizesRequests;
+    use DispatchesJobs;
+    use ValidatesRequests;
 
     /**
-     * @param Request $request
      * @throws AuthorizationException
-     * @return JsonResponse
      */
     public function upload(Request $request): JsonResponse
     {
