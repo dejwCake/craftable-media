@@ -15,8 +15,22 @@ class TestModel extends Model implements HasMedia
     use HasMediaThumbsTrait;
     use ProcessMediaTrait;
 
+    /**
+     * @var bool
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+     */
     public $timestamps = false;
+
+    /**
+     * @var string
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+     */
     protected $table = 'test_models';
+
+    /**
+     * @var array<string>
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+     */
     protected $guarded = [];
 
     /**
@@ -31,6 +45,7 @@ class TestModel extends Model implements HasMedia
      * Register the conversions that should be performed.
      *
      * @param Media|null $media
+     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
      */
     public function registerMediaConversions(Media $media = null): void
     {

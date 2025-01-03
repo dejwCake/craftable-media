@@ -40,16 +40,17 @@ class TestModelWithCollectionsDisabledAutoProcess extends TestModel
      *
      * @param null|Media $media
      * @throws InvalidManipulation
+     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
      */
     public function registerMediaConversions(Media $media = null): void
     {
         $this->autoRegisterThumb200();
 
         $this->addMediaConversion('thumb')
+            ->performOnCollections('gallery')
             ->width(368)
             ->height(232)
             ->sharpen(10)
-            ->optimize()
-            ->performOnCollections('gallery');
+            ->optimize();
     }
 }

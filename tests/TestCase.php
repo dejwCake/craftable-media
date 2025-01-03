@@ -63,7 +63,7 @@ abstract class TestCase extends Orchestra
     /**
      * @param Application $app
      *
-     * @return array
+     * @return array<class-string>
      */
     protected function getPackageProviders($app): array
     {
@@ -75,6 +75,7 @@ abstract class TestCase extends Orchestra
 
     /**
      * @param Application $app
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      */
     protected function getEnvironmentSetUp($app): void
     {
@@ -202,10 +203,7 @@ abstract class TestCase extends Orchestra
         File::copyDirectory(__DIR__ . '/testfiles', $this->getUploadsDirectory());
     }
 
-    /**
-     * @param $directory
-     */
-    protected function initializeDirectory($directory): void
+    protected function initializeDirectory(string $directory): void
     {
         if (File::isDirectory($directory)) {
             File::deleteDirectory($directory);

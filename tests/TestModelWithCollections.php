@@ -43,6 +43,7 @@ class TestModelWithCollections extends TestModel
      *
      * @param null|Media $media
      * @throws InvalidManipulation
+     * @phpcsSuppress SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
      */
     public function registerMediaConversions(Media $media = null): void
     {
