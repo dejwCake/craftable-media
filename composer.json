@@ -59,6 +59,6 @@
         }
     },
     "branch-alias": {
-        "dev-main": "0.9-dev"
+        "dev-main": "1.0-dev"
     }
 }
