@@ -55,12 +55,12 @@ trait ProcessMediaTrait
 
         //First validate input
         $this->getMediaCollections()->each(function ($mediaCollection) use ($inputMedia) {
-            $this->validate(collect($inputMedia->get($mediaCollection->getName())), $mediaCollection);
+            $this->validate(new Collection($inputMedia->get($mediaCollection->getName())), $mediaCollection);
         });
 
         //Then process each media
         $this->getMediaCollections()->each(function ($mediaCollection) use ($inputMedia) {
-            collect($inputMedia->get($mediaCollection->getName()))->each(function ($inputMedium) use (
+            (new Collection($inputMedia->get($mediaCollection->getName())))->each(function ($inputMedium) use (
                 $mediaCollection
             ) {
                 $this->processMedium($inputMedium, $mediaCollection);

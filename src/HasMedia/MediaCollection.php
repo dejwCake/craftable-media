@@ -2,6 +2,7 @@
 
 namespace Brackets\Media\HasMedia;
 
+use Illuminate\Support\Collection;
 use Spatie\MediaLibrary\MediaCollections\MediaCollection as ParentMediaCollection;
 
 class MediaCollection extends ParentMediaCollection
@@ -15,7 +16,7 @@ class MediaCollection extends ParentMediaCollection
     /** @var int */
     protected int $maxFileSize;
     
-    /** @var array|null */
+    /** @var array<string>|null */
     protected ?array $acceptedFileTypes = null;
     
     /** @var string|null */
@@ -95,16 +96,14 @@ class MediaCollection extends ParentMediaCollection
     /**
      * Set the accepted file types (in MIME type format)
      *
-     * @param array ...$acceptedFileTypes
-     *
      * @return $this
      */
-    public function accepts(...$acceptedFileTypes): self
+    public function accepts(string ...$acceptedFileTypes): self
     {
         $this->acceptedFileTypes = $acceptedFileTypes;
-        if (collect($this->acceptedFileTypes)->count() > 0) {
-            $this->isImage = collect($this->acceptedFileTypes)->reject(static function ($fileType) {
-                return strpos($fileType, 'image') === 0;
+        if ((new Collection($this->acceptedFileTypes))->count() > 0) {
+            $this->isImage = (new Collection($this->acceptedFileTypes))->reject(static function ($fileType) {
+                return str_starts_with($fileType, 'image');
             })->count() === 0;
         }
 

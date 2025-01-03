@@ -31,13 +31,14 @@
         }
     ],
     "require": {
-        "php": "^8.1",
-        "illuminate/support": "^10.0",
-        "spatie/laravel-medialibrary": "^10.0"
+        "php": "^8.2",
+        "illuminate/support": "^11.37",
+        "spatie/laravel-medialibrary": "^11.0"
     },
     "require-dev": {
-        "orchestra/testbench": "~8.5",
-        "phpunit/phpunit": "^10.1"
+        "orchestra/testbench": "^9.9",
+        "phpunit/phpunit": "^11.5",
+        "larastan/larastan": "^2.9"
     },
     "autoload": {
         "psr-4": {

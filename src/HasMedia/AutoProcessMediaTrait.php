@@ -2,6 +2,8 @@
 
 namespace Brackets\Media\HasMedia;
 
+use Illuminate\Support\Collection;
+
 trait AutoProcessMediaTrait
 {
     /**
@@ -11,7 +13,7 @@ trait AutoProcessMediaTrait
     {
         static::saving(static function ($model) {
             /** @var self $model */
-            $model->processMedia(collect(request()->only($model->getMediaCollections()->map->getName()->toArray())));
+            $model->processMedia(new Collection(request()->only($model->getMediaCollections()->map->getName()->toArray())));
         });
     }
 }

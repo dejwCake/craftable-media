@@ -3,6 +3,7 @@
 namespace Brackets\Media\HasMedia;
 
 use Illuminate\Support\Collection;
+use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\Conversions\ConversionCollection;
 
 /**
@@ -46,11 +47,13 @@ trait HasMediaThumbsTrait
      */
     public function autoRegisterThumb200(): void
     {
-        $this->getMediaCollections()->filter->isImage()->each(function ($mediaCollection) {
+        $this->getMediaCollections()->filter(function (MediaCollection $mediaCollection) {
+            return $mediaCollection->isImage();
+        })->each(function (MediaCollection $mediaCollection) {
             $this->addMediaConversion('thumb_200')
                 ->width(200)
                 ->height(200)
-                ->fit('crop', 200, 200)
+                ->fit(Fit::Crop, 200, 200)
                 ->optimize()
                 ->performOnCollections($mediaCollection->getName());
         });

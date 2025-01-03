@@ -11,7 +11,7 @@ class TooManyFiles extends FileCannotBeAdded
      * @param string|null $collectionName
      * @return TooManyFiles
      */
-    public static function create(int $maxFileCount = null, string $collectionName = null): TooManyFiles
+    public static function create(?int $maxFileCount = null, ?string $collectionName = null): TooManyFiles
     {
         return new static(trans('brackets/media::media.exceptions.too_many_files',
             ['collectionName' => $collectionName, 'maxFileCount' => $maxFileCount]));

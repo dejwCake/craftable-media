@@ -26,7 +26,7 @@ class FileUploadController extends BaseController
         if ($request->hasFile('file')) {
             $path = $request->file('file')->store('', ['disk' => 'uploads']);
 
-            return response()->json(['path' => $path], 200);
+            return response()->json(['path' => $path]);
         }
 
         return response()->json(trans('brackets/media::media.file.not_provided'), 422);

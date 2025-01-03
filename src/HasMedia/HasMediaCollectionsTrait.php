@@ -36,7 +36,7 @@ trait HasMediaCollectionsTrait
     {
         $this->registerMediaCollections();
 
-        return collect($this->mediaCollections)->keyBy('name');
+        return (new Collection($this->mediaCollections))->keyBy('name');
     }
 
     /**
