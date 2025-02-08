@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Brackets\Media\Tests;
 
+use Brackets\Media\HasMedia\HasMediaCollections;
 use Brackets\Media\HasMedia\HasMediaCollectionsTrait;
 use Brackets\Media\HasMedia\HasMediaThumbsTrait;
 use Brackets\Media\HasMedia\ProcessMediaTrait;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class TestModel extends Model implements HasMedia
+class TestModel extends Model implements HasMedia, HasMediaCollections
 {
     use HasMediaCollectionsTrait;
     use HasMediaThumbsTrait;

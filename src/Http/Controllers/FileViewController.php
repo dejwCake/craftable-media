@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Brackets\Media\Http\Controllers;
 
-use Brackets\Media\HasMedia\HasMediaCollectionsTrait;
+use Brackets\Media\HasMedia\HasMediaCollections;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -42,8 +42,7 @@ class FileViewController extends BaseController
         $medium = app(MediaModel::class)->find($fileId);
         if ($medium !== null) {
             $model = $medium->model;
-            // PHPStorm sees it as an error - Spatie should fix this using PHPDoc
-            assert($model instanceof HasMediaCollectionsTrait);
+            assert($model instanceof HasMediaCollections);
 
             $mediaCollection = $model->getMediaCollection($medium->collection_name);
             if ($mediaCollection !== null) {

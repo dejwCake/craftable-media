@@ -15,12 +15,12 @@ class HasMediaCollectionsTest extends TestCase
 {
     public function testEmptyCollectionReturnsLaravelCollection(): void
     {
-        self::assertInstanceOf(Collection::class, $this->testModel->getMediaCollections());
+        self::assertCount(0, $this->testModel->getMediaCollections());
     }
 
     public function testNotEmptyCollectionReturnsLaravelCollection(): void
     {
-        self::assertInstanceOf(Collection::class, $this->testModelWithCollections->getMediaCollections());
+        self::assertCount(3, $this->testModelWithCollections->getMediaCollections());
     }
 
     public function testCheckMediaCollectionsCount(): void
