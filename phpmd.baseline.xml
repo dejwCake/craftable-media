@@ -1,3 +1,5 @@
 <?xml version="1.0"?>
 <phpmd-baseline>
+  <violation rule="PHPMD\Rule\Design\TooManyPublicMethods" file="tests/Feature/HasMediaCollectionsTest.php"/>
+  <violation rule="PHPMD\Rule\Design\CouplingBetweenObjects" file="tests/TestCase.php"/>
 </phpmd-baseline>
