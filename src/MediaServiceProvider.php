@@ -12,9 +12,6 @@ use Spatie\MediaLibrary\MediaCollections\Filesystem;
 
 class MediaServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
         $this->app->bind(Filesystem::class, FixedFilesystem::class);
@@ -35,9 +32,6 @@ class MediaServiceProvider extends ServiceProvider
         }
     }
 
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //FIXME it would be nice if you could somehow publish into filesystems
