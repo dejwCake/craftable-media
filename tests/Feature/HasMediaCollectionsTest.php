@@ -609,7 +609,7 @@ class HasMediaCollectionsTest extends TestCase
 
     public function testUserCanGetThumbs(): void
     {
-        $this->assertCount(0, $this->testModelWithCollections->getMedia('gallery'));
+        self::assertCount(0, $this->testModelWithCollections->getMedia('gallery'));
 
         $request = $this->getRequest([
             'gallery' => [
@@ -660,7 +660,7 @@ class HasMediaCollectionsTest extends TestCase
         );
         $this->testModelWithCollections = $this->testModelWithCollections->fresh()->load('media');
 
-        $this->assertCount(1, $this->testModelWithCollections->getThumbs200ForCollection('documents'));
+        self::assertCount(1, $this->testModelWithCollections->getThumbs200ForCollection('documents'));
     }
 
     public function testSystemAutomaticallyDetectsImageCollectionBasedOnMimeType(): void
