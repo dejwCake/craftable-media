@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Brackets\Media\UrlGenerator;
 
+use Illuminate\Contracts\Routing\UrlGenerator;
 use Spatie\MediaLibrary\Support\UrlGenerator\DefaultUrlGenerator as SpatieUrlGenerator;
 
 class LocalUrlGenerator extends SpatieUrlGenerator
@@ -13,7 +14,10 @@ class LocalUrlGenerator extends SpatieUrlGenerator
         if ($this->media->disk === 'media_private') {
             $url = $this->getPathRelativeToRoot();
 
-            return route('brackets/media::view', [], false) . '?path=' . $this->makeCompatibleForNonUnixHosts($url);
+            $urlGenerator = app(UrlGenerator::class);
+
+            return $urlGenerator->route('brackets/media::view', [], false)
+                . '?path=' . $this->makeCompatibleForNonUnixHosts($url);
         } else {
             return parent::getUrl();
         }

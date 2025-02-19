@@ -6,10 +6,10 @@ namespace Brackets\Media\HasMedia;
 
 use Brackets\Media\Exceptions\FileCannotBeAdded\FileIsTooBig;
 use Brackets\Media\Exceptions\FileCannotBeAdded\TooManyFiles;
+use Illuminate\Contracts\Validation\Factory;
+use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Http\File;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileCannotBeAdded;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig as SpatieFileIsTooBig;
@@ -87,7 +87,8 @@ trait ProcessMediaTrait
                 }
             }
         } elseif (isset($inputMedium['action']) && $inputMedium['action'] === 'add') {
-            $mediumFileFullPath = Storage::disk('uploads')->path($inputMedium['path']);
+            $filesystemManager = app(FilesystemManager::class);
+            $mediumFileFullPath = $filesystemManager->disk('uploads')->path($inputMedium['path']);
 
             $this->addMedia($mediumFileFullPath)
                 ->withCustomProperties($inputMedium['meta_data'])
@@ -105,7 +106,8 @@ trait ProcessMediaTrait
         $this->validateCollectionMediaCount($inputMediaForMediaCollection, $mediaCollection);
         $inputMediaForMediaCollection->each(function ($inputMedium) use ($mediaCollection): void {
             if ($inputMedium['action'] === 'add') {
-                $mediumFileFullPath = Storage::disk('uploads')->path($inputMedium['path']);
+                $filesystemManager = app(FilesystemManager::class);
+                $mediumFileFullPath = $filesystemManager->disk('uploads')->path($inputMedium['path']);
                 $this->validateTypeOfFile($mediumFileFullPath, $mediaCollection);
                 $this->validateSize($mediumFileFullPath, $mediaCollection);
             }
@@ -172,7 +174,9 @@ trait ProcessMediaTrait
      */
     protected function guardAgainstFileSizeLimit(string $filePath, float $maxFileSize, string $name): void
     {
-        $validation = Validator::make(
+        $validator = app(Factory::class);
+        assert($validator instanceof Factory);
+        $validation = $validator->make(
             ['file' => new File($filePath)],
             ['file' => 'max:' . round($maxFileSize / 1024)],
         );

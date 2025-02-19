@@ -5,32 +5,26 @@ declare(strict_types=1);
 namespace Brackets\Media\Http\Controllers;
 
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 
-class FileUploadController extends BaseController
+final class FileUploadController extends BaseController
 {
-    use AuthorizesRequests;
-    use DispatchesJobs;
-    use ValidatesRequests;
-
     /**
      * @throws AuthorizationException
      */
-    public function upload(Request $request): JsonResponse
+    public function upload(Request $request, Gate $gate): JsonResponse
     {
-        $this->authorize('admin.upload');
+        $gate->authorize('admin.upload');
 
         if ($request->hasFile('file')) {
             $path = $request->file('file')->store('', ['disk' => 'uploads']);
 
-            return response()->json(['path' => $path]);
+            return new JsonResponse(['path' => $path]);
         }
 
-        return response()->json(trans('brackets/media::media.file.not_provided'), 422);
+        return new JsonResponse(trans('brackets/media::media.file.not_provided'), 422);
     }
 }

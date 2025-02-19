@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Brackets\Media\HasMedia;
 
+use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Support\Collection;
 use Spatie\MediaLibrary\MediaCollections\MediaCollection as ParentMediaCollection;
 
@@ -22,6 +23,8 @@ class MediaCollection extends ParentMediaCollection
 
     protected ?string $uploadPermission = null;
 
+    private readonly Config $config;
+
     /**
      * MediaCollection constructor.
      */
@@ -29,8 +32,9 @@ class MediaCollection extends ParentMediaCollection
     {
         parent::__construct($name);
 
-        $this->diskName = config('media-collections.public_disk', 'media');
-        $this->maxFileSize = config('media-library.max_file_size', 1024 * 1024 * 10);
+        $this->config = app(Config::class);
+        $this->diskName = $this->config->get('media-collections.public_disk', 'media');
+        $this->maxFileSize = $this->config->get('media-library.max_file_size', 1024 * 1024 * 10);
     }
 
     /**
@@ -60,7 +64,7 @@ class MediaCollection extends ParentMediaCollection
      */
     public function private(): self
     {
-        $this->diskName = config('media-collections.private_disk');
+        $this->diskName = $this->config->get('media-collections.private_disk');
 
         return $this;
     }
@@ -143,7 +147,7 @@ class MediaCollection extends ParentMediaCollection
     // ktory len nastavi interny flag na true. Aby sme vedeli presnejsie ci ide o private alebo nie
     public function isPrivate(): bool
     {
-        return $this->diskName === config('media-collections.private_disk');
+        return $this->diskName === $this->config->get('media-collections.private_disk');
     }
 
     public function getName(): ?string

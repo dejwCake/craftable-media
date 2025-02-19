@@ -6,40 +6,35 @@ namespace Brackets\Media\Http\Controllers;
 
 use Brackets\Media\HasMedia\HasMediaCollections;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Contracts\Auth\Access\Gate;
+use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Support\Facades\Response as ResponseFacade;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use League\Flysystem\FilesystemException;
 use Spatie\MediaLibrary\MediaCollections\Models\Media as MediaModel;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use function assert;
 
-class FileViewController extends BaseController
+final class FileViewController extends BaseController
 {
-    use AuthorizesRequests;
-    use DispatchesJobs;
-    use ValidatesRequests;
-
     /**
      * @throws AuthorizationException
      * @throws ValidationException
      * @throws FilesystemException
      */
-    public function view(Request $request): ?Response
+    public function view(Request $request, FilesystemManager $filesystemManager, Gate $gate): Response
     {
-        $this->validate($request, [
+        $validated = $request->validate([
             'path' => 'required|string',
         ]);
+        $storagePath = $validated['path'];
 
-        [$fileId] = explode('/', $request->get('path'), 2);
+        [$fileId] = explode('/', $storagePath, 2);
 
-        $medium = app(MediaModel::class)->find($fileId);
+        $medium = MediaModel::find($fileId);
         if ($medium !== null) {
             $model = $medium->model;
             assert($model instanceof HasMediaCollections);
@@ -47,23 +42,26 @@ class FileViewController extends BaseController
             $mediaCollection = $model->getMediaCollection($medium->collection_name);
             if ($mediaCollection !== null) {
                 if ($mediaCollection->getViewPermission()) {
-                    $this->authorize($mediaCollection->getViewPermission(), [$model]);
+                    $gate->authorize($mediaCollection->getViewPermission(), [$model]);
                 }
 
-                $storagePath = $request->get('path');
-                $fileSystem = Storage::disk($mediaCollection->getDisk());
+                $fileSystem = $filesystemManager->disk($mediaCollection->getDisk());
 
-                if (! $fileSystem->exists($storagePath)) {
-                    abort(404);
+                if (!$fileSystem->exists($storagePath)) {
+                    throw new NotFoundHttpException('File not found');
                 }
 
-                return ResponseFacade::make($fileSystem->get($storagePath), 200, [
-                    'Content-Type' => $fileSystem->mimeType($storagePath),
-                    'Content-Disposition' => 'inline; filename="' . basename($request->get('path')) . '"',
-                ]);
+                return new Response(
+                    $fileSystem->get($storagePath),
+                    200,
+                    [
+                        'Content-Type' => $fileSystem->mimeType($storagePath),
+                        'Content-Disposition' => 'inline; filename="' . basename($request->get('path')) . '"',
+                    ],
+                );
             }
         }
 
-        abort(404);
+        throw new NotFoundHttpException('Medium not found');
     }
 }
