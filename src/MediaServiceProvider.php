@@ -6,7 +6,6 @@ namespace Brackets\Media;
 
 use Brackets\Media\MediaCollections\Filesystem as FixedFilesystem;
 use Illuminate\Routing\Router;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Spatie\MediaLibrary\MediaCollections\Filesystem;
 
@@ -16,11 +15,12 @@ class MediaServiceProvider extends ServiceProvider
     {
         $this->app->bind(Filesystem::class, FixedFilesystem::class);
 
-        if (app(Router::class)->hasMiddlewareGroup('admin')) {
-            Route::middleware(['web', 'admin'])
+        $router = app(Router::class);
+        if ($router->hasMiddlewareGroup('admin')) {
+            $router->middleware(['web', 'admin'])
                 ->group(__DIR__ . '/../routes/web.php');
         } else {
-            Route::middleware(['web'])
+            $router->middleware(['web'])
                 ->group(__DIR__ . '/../routes/web.php');
         }
 
