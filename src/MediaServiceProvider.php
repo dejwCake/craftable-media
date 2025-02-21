@@ -13,8 +13,6 @@ class MediaServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        $this->app->bind(Filesystem::class, FixedFilesystem::class);
-
         $router = app(Router::class);
         if ($router->hasMiddlewareGroup('admin')) {
             $router->middleware(['web', 'admin'])
@@ -23,7 +21,6 @@ class MediaServiceProvider extends ServiceProvider
             $router->middleware(['web'])
                 ->group(__DIR__ . '/../routes/web.php');
         }
-
 
         if ($this->app->runningInConsole()) {
             $this->publishes([
@@ -44,5 +41,7 @@ class MediaServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/auth.guard.admin.php', 'auth.guards.admin');
 
         $this->mergeConfigFrom(__DIR__ . '/../config/auth.providers.admin_users.php', 'auth.providers.admin_users');
+
+        $this->app->bind(Filesystem::class, FixedFilesystem::class);
     }
 }
