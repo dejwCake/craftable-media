@@ -8,23 +8,25 @@ This packages adds an ability to assign a media to your eloquent models. It uses
 
 You can find full documentation at https://docs.getcraftable.com/#/media.
 
-## Composer
+## How to develop this project
 
-To develop this package, you need to have composer installed. To run composer command use:
+### Composer
+
+Update dependencies:
 ```shell
-  docker compose run -it --rm test composer update
+docker compose run -it --rm test composer update
 ```
 
-For composer normalization:
+Composer normalization:
 ```shell
-  docker compose run -it --rm php-qa composer normalize
+docker compose run -it --rm php-qa composer normalize
 ```
 
-## Run tests
+### Run tests
 
-To run tests use this docker environment.
+Run tests with pcov:
 ```shell
-  docker compose run -it --rm test vendor/bin/phpunit -d pcov.enabled=1
+docker compose run -it --rm test ./vendor/bin/phpunit -d pcov.enabled=1
 ```
 
 To switch between postgresql and mariadb change in `docker-compose.yml` DB_CONNECTION environmental variable:
@@ -33,31 +35,29 @@ To switch between postgresql and mariadb change in `docker-compose.yml` DB_CONNE
 + DB_CONNECTION: mysql
 ```
 
-## Run code analysis tools
+### Run code analysis tools (php-qa)
 
-To be sure, that your code is clean, you can run code analysis tools. To do this, run:
-
-For php compatibility:
+PHP compatibility:
 ```shell
-  docker compose run -it --rm php-qa phpcs --standard=.phpcs.compatibility.xml --cache=.phpcs.cache
+docker compose run -it --rm php-qa phpcs --standard=.phpcs.compatibility.xml --cache=.phpcs.cache
 ```
 
-For code style:
+Code style:
 ```shell
-  docker compose run -it --rm php-qa phpcs -s --colors --extensions=php
+docker compose run -it --rm php-qa phpcs -s --colors --extensions=php
 ```
 
-or to fix issues:
+Fix style issues:
 ```shell
-  docker compose run -it --rm php-qa phpcbf -s --colors --extensions=php
+docker compose run -it --rm php-qa phpcbf -s --colors --extensions=php
 ```
 
-For static analysis:
+Static analysis (phpstan):
 ```shell
-  docker compose run -it --rm php-qa phpstan analyse --configuration=phpstan.neon
+docker compose run -it --rm php-qa phpstan analyse --configuration=phpstan.neon
 ```
 
-For mess detector:
+Mess detector (phpmd):
 ```shell
-  docker compose run -it --rm php-qa phpmd ./src,./config,./install-stubs,./resources,./routes,./tests ansi phpmd.xml --suffixes php --baseline-file phpmd.baseline.xml
+docker compose run -it --rm php-qa phpmd ./src,./config,./install-stubs,./resources,./routes,./tests ansi phpmd.xml --suffixes php --baseline-file phpmd.baseline.xml
 ```
