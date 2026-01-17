@@ -43,8 +43,7 @@
     "autoload": {
         "psr-4": {
             "Brackets\\Media\\": "src/"
-        },
-        "classmap": []
+        }
     },
     "autoload-dev": {
         "psr-4": {

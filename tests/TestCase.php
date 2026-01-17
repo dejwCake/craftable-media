@@ -115,7 +115,8 @@ abstract class TestCase extends Orchestra
         // FIXME these config setting needs to have a look
         $app['config']->set('filesystems.disks.media', [
             'driver' => 'local',
-            'root' => $this->getMediaDirectory(),
+            'root' => public_path() . '/media',
+            'url' => '/media',
         ]);
 
 
