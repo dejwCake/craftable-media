@@ -1,10 +1,10 @@
 # Media
 
-This packages adds an ability to assign a media to your eloquent models. It uses Spatie's `spatie/laravel-medialibrary`, but it goes a bit further:
-- Collections definition - inspired by the conversions definition, we have created Media Collections definition via similar fluent API
-- Auto-Process - saving the eloquent model automatically processes and attaches media collections from the request
-- Authorization - controls, who has the permission to attach specific medium to specific model
-- Private access - controls, who has the permission to view specific medium
+This package adds media management capabilities to your Eloquent models. It builds on Spatie's `spatie/laravel-medialibrary` and adds:
+- Collections definition – a fluent API for defining media collections, inspired by conversion definitions
+- Auto-processing – saving an Eloquent model can automatically process and attach media collections from the request
+- Authorization – control who has permission to attach specific media to specific models
+- Private access – control who has permission to view specific media
 
 You can find full documentation at https://docs.getcraftable.com/#/media.
 
