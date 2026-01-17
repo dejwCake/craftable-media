@@ -6,6 +6,7 @@ This package adds media management capabilities to your Eloquent models. It buil
 - Authorization – control who has permission to attach specific media to specific models
 - Private access – control who has permission to view specific media
 
+## Documentation
 You can find full documentation at https://docs.getcraftable.com/#/media.
 
 ## How to develop this project
