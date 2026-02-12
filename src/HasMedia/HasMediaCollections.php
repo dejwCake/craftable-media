@@ -12,5 +12,5 @@ interface HasMediaCollections
 
     public function getMediaCollections(): Collection;
 
-    public function getMediaCollection(string $name): ?MediaCollection;
+    public function getCustomMediaCollection(string $name): ?MediaCollection;
 }

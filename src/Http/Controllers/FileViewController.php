@@ -39,7 +39,7 @@ final class FileViewController extends BaseController
             $model = $medium->model;
             assert($model instanceof HasMediaCollections);
 
-            $mediaCollection = $model->getMediaCollection($medium->collection_name);
+            $mediaCollection = $model->getCustomMediaCollection($medium->collection_name);
             if ($mediaCollection !== null) {
                 if ($mediaCollection->getViewPermission()) {
                     $gate->authorize($mediaCollection->getViewPermission(), [$model]);
@@ -56,7 +56,7 @@ final class FileViewController extends BaseController
                     200,
                     [
                         'Content-Type' => $fileSystem->mimeType($storagePath),
-                        'Content-Disposition' => 'inline; filename="' . basename($request->get('path')) . '"',
+                        'Content-Disposition' => 'inline; filename="' . basename($request->input('path')) . '"',
                     ],
                 );
             }

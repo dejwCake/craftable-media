@@ -15,7 +15,7 @@ trait HasMediaThumbsTrait
 {
     public function getThumbs200ForCollection(string $mediaCollectionName): Collection
     {
-        $mediaCollection = $this->getMediaCollection($mediaCollectionName);
+        $mediaCollection = $this->getCustomMediaCollection($mediaCollectionName);
 
         return $this->getMedia($mediaCollectionName)->filter(
             static function ($medium) use ($mediaCollectionName, $mediaCollection) {
