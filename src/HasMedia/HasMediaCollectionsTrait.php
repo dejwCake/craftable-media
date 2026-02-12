@@ -40,7 +40,7 @@ trait HasMediaCollectionsTrait
      *
      * If Media Collection was not registered on this model, null is returned
      */
-    public function getMediaCollection(string $name): ?MediaCollection
+    public function getCustomMediaCollection(string $name): ?MediaCollection
     {
         return $this->getMediaCollections()->get($name);
     }
