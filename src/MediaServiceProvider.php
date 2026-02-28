@@ -13,6 +13,8 @@ class MediaServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
+        $this->loadTranslationsFrom(__DIR__ . '/../lang', 'brackets/media');
+
         $router = app(Router::class);
         if ($router->hasMiddlewareGroup('admin')) {
             $router->middleware(['web', 'admin'])
@@ -23,9 +25,7 @@ class MediaServiceProvider extends ServiceProvider
         }
 
         if ($this->app->runningInConsole()) {
-            $this->publishes([
-                __DIR__ . '/../install-stubs/config/media-collections.php' => config_path('media-collections.php'),
-            ], 'config');
+            $this->publish();
         }
     }
 
@@ -34,7 +34,7 @@ class MediaServiceProvider extends ServiceProvider
         //FIXME it would be nice if you could somehow publish into filesystems
         $this->mergeConfigFrom(__DIR__ . '/../config/filesystems.php', 'filesystems.disks');
 
-        $this->mergeConfigFrom(__DIR__ . '/../install-stubs/config/media-collections.php', 'media-collections');
+        $this->mergeConfigFrom(__DIR__ . '/../config/media-collections.php', 'media-collections');
 
         $this->mergeConfigFrom(__DIR__ . '/../config/admin-auth.php', 'admin-auth.defaults');
 
@@ -43,5 +43,16 @@ class MediaServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/auth.providers.admin_users.php', 'auth.providers.admin_users');
 
         $this->app->bind(Filesystem::class, FixedFilesystem::class);
+    }
+
+    private function publish(): void
+    {
+        $this->publishes([
+            __DIR__ . '/../config/media-collections.php' => $this->app->configPath('media-collections.php'),
+        ], 'config');
+
+        $this->publishes([
+            __DIR__ . '/../lang' => $this->app->langPath('vendor/brackets/media'),
+        ], 'lang');
     }
 }

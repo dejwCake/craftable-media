@@ -13,8 +13,8 @@
     <arg value="p" />
 
     <file>config/</file>
-    <file>install-stubs/</file>
-    <file>resources/</file>
+    <file>lang/</file>
+    <file>routes/</file>
     <file>src/</file>
     <file>tests/</file>
 

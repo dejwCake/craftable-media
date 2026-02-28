@@ -13,7 +13,7 @@ class FileIsTooBig extends FileCannotBeAdded
         $actualFileSize = filesize($file);
 
         return new self(trans(
-            'brackets/media::media.exceptions.thumbs_does_not_exists',
+            'brackets/media::media.exceptions.file_is_too_big',
             ['actualFileSize' => $actualFileSize, 'collectionName' => $collectionName, 'maxSize' => $maxSize],
         ));
     }
