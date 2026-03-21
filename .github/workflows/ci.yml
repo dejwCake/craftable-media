@@ -12,7 +12,7 @@ jobs:
     name: PHPCS
     runs-on: ubuntu-latest
     container:
-      image: dejwcake/phpqa8.4:2
+      image: dejwcake/phpqa8.5:1
     steps:
       - uses: actions/checkout@v5
       - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
@@ -23,7 +23,7 @@ jobs:
     name: PHPCS Compatibility
     runs-on: ubuntu-latest
     container:
-      image: dejwcake/phpqa8.4:2
+      image: dejwcake/phpqa8.5:1
     steps:
       - uses: actions/checkout@v5
       - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
@@ -34,7 +34,7 @@ jobs:
     name: PHPStan
     runs-on: ubuntu-latest
     container:
-      image: dejwcake/phpqa8.4:2
+      image: dejwcake/phpqa8.5:1
     steps:
       - uses: actions/checkout@v5
       - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
@@ -45,7 +45,7 @@ jobs:
     name: PHPMD
     runs-on: ubuntu-latest
     container:
-      image: dejwcake/phpqa8.4:2
+      image: dejwcake/phpqa8.5:1
     steps:
       - uses: actions/checkout@v5
       - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
@@ -62,7 +62,7 @@ jobs:
     needs: [phpcs, phpcs-compatibility, phpstan, phpmd]
     runs-on: ubuntu-latest
     container:
-      image: dejwcake/php8.2:1
+      image: dejwcake/php8.5:1
       env:
         DB_CONNECTION: pgsql
         DB_HOST: pgsql
@@ -72,7 +72,7 @@ jobs:
         DB_PASSWORD: bestsecret
     services:
       pgsql:
-        image: dejwcake/postgres17:1
+        image: dejwcake/postgres18:1
         env:
           POSTGRES_DB: laravel
           POSTGRES_USER: root
@@ -84,7 +84,7 @@ jobs:
           --health-timeout=5s
           --health-retries=5
       mysql:
-        image: dejwcake/mariadb11.6:1
+        image: dejwcake/mariadb12.1:1
         env:
           MYSQL_DATABASE: laravel
           MYSQL_USER: laravel

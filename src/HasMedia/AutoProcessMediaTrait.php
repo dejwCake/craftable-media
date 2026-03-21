@@ -11,7 +11,7 @@ trait AutoProcessMediaTrait
     /**
      * Setup to auto process during saving
      */
-    public static function bootHasMediaCollectionsTrait(): void
+    public static function bootAutoProcessMediaTrait(): void
     {
         static::saving(static function ($model): void {
             /** @var self $model */

@@ -40,6 +40,7 @@ final class MediaCollection extends ParentMediaCollection
     /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingAnyTypeHint
      */
+    #[\Override]
     public static function create($name): self
     {
         return new self($name);
