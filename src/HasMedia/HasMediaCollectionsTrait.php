@@ -16,7 +16,6 @@ trait HasMediaCollectionsTrait
      *
      * Adds new collection to model and set its name.
      */
-    #[\Override]
     public function addMediaCollection(string $name): MediaCollection
     {
         $mediaCollection = MediaCollection::create($name);
