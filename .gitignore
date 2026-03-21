@@ -20,6 +20,9 @@ composer.lock
 .phpunit.result.cache
 .phpcs.cache
 
+# Test artifacts
+tests/temp/
+
 # Docker
 docker-compose.override.yml
 

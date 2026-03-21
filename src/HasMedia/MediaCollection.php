@@ -47,18 +47,6 @@ final class MediaCollection extends ParentMediaCollection
     }
 
     /**
-     * Specify a disk where to store this collection
-     *
-     * @deprecated deprecated since version 3.0, remove in version 4.0
-     */
-    public function disk(string $disk): self
-    {
-        $this->diskName = $disk;
-
-        return $this;
-    }
-
-    /**
      * Alias to setting default private disk
      *
      * @return $this
@@ -144,8 +132,6 @@ final class MediaCollection extends ParentMediaCollection
         return $this->isImage;
     }
 
-    //FIXME: the disk method could have a second optional parameter private, which would just set an internal flag to
-    // true. So we could more precisely know whether it's private or not.
     public function isPrivate(): bool
     {
         return $this->diskName === $this->config->get('media-collections.private_disk');

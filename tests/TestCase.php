@@ -32,6 +32,7 @@ abstract class TestCase extends Orchestra
         parent::setUp();
 
         $this->initializeDirectory($this->getTempDirectory());
+
         $this->setUpDatabase($this->app);
         $this->setUpTempTestFiles();
 
@@ -54,6 +55,16 @@ abstract class TestCase extends Orchestra
 
             return TestModelWithCollectionsDisabledAutoProcess::create($sanitized);
         });
+    }
+
+    public function tearDown(): void
+    {
+        $filesystem = $this->app->make(Filesystem::class);
+        if ($filesystem->isDirectory($this->getTempDirectory())) {
+            $filesystem->deleteDirectory($this->getTempDirectory());
+        }
+
+        parent::tearDown();
     }
 
     /**

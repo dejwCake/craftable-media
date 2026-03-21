@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Brackets\Media\Tests\Feature;
+namespace Brackets\Media\Tests\Feature\Http\Controllers;
 
 use Brackets\Media\Tests\TestCase;
 use Illuminate\Http\UploadedFile;
 
-final class FileUploaderTest extends TestCase
+final class FileUploadControllerTest extends TestCase
 {
     public function testAUserCanUploadFile(): void
     {
@@ -23,9 +23,18 @@ final class FileUploaderTest extends TestCase
         $response->assertSee('psd');
     }
 
-    public function testUnauthorizedUserCannotUploadFile(): void
+    public function testUnauthenticatedUserCannotUploadFile(): void
     {
-        self::markTestSkipped('TODO');
-        //Todo finish
+        $response = $this->postJson('upload', []);
+
+        $response->assertStatus(401);
+    }
+
+    public function testUploadWithoutFileReturnsError(): void
+    {
+        $this->disableAuthorization();
+        $response = $this->postJson('upload', []);
+
+        $response->assertStatus(422);
     }
 }
