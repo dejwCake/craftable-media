@@ -11,30 +11,3 @@ parameters:
 			identifier: larastan.noEnvCallsOutsideOfConfig
 			count: 1
 			path: config/filesystems.php
-
-		-
-			message: '''
-				#^Call to deprecated method get\(\) of class Illuminate\\Http\\Request\:
-				since Symfony 7\.4, use properties `\-\>attributes`, `query` or `request` directly instead$#
-			'''
-			identifier: method.deprecated
-			count: 1
-			path: src/Http/Controllers/FileViewController.php
-
-		-
-			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
-			identifier: larastan.noEnvCallsOutsideOfConfig
-			count: 8
-			path: tests/TestCase.php
-
-		-
-			message: '#^Call to function assert\(\) with true will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: tests/TestModel.php
-
-		-
-			message: '#^Instanceof between Illuminate\\Validation\\Factory and Illuminate\\Contracts\\Validation\\Factory will always evaluate to true\.$#'
-			identifier: instanceof.alwaysTrue
-			count: 1
-			path: tests/TestModel.php
