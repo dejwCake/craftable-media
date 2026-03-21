@@ -7,7 +7,7 @@ namespace Brackets\Media\Tests\Feature;
 use Brackets\Media\Tests\TestCase;
 use Illuminate\Http\UploadedFile;
 
-class FileUploaderTest extends TestCase
+final class FileUploaderTest extends TestCase
 {
     public function testAUserCanUploadFile(): void
     {

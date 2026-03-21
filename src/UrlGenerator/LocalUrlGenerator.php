@@ -7,7 +7,7 @@ namespace Brackets\Media\UrlGenerator;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Spatie\MediaLibrary\Support\UrlGenerator\DefaultUrlGenerator as SpatieUrlGenerator;
 
-class LocalUrlGenerator extends SpatieUrlGenerator
+final class LocalUrlGenerator extends SpatieUrlGenerator
 {
     public function getUrl(): string
     {

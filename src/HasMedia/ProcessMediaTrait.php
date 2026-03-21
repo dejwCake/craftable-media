@@ -77,7 +77,7 @@ trait ProcessMediaTrait
     public function processMedium(array $inputMedium, MediaCollection $mediaCollection): void
     {
         if (isset($inputMedium['id']) && $inputMedium['id']) {
-            $medium = app(MediaModel::class)->find($inputMedium['id']);
+            $medium = MediaModel::find($inputMedium['id']);
             if ($medium !== null) {
                 if (isset($inputMedium['action']) && $inputMedium['action'] === 'delete') {
                     $medium->delete();

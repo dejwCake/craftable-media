@@ -6,7 +6,7 @@ namespace Brackets\Media\Exceptions\FileCannotBeAdded;
 
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileCannotBeAdded;
 
-class FileIsTooBig extends FileCannotBeAdded
+final class FileIsTooBig extends FileCannotBeAdded
 {
     public static function create(string $file, float $maxSize, string $collectionName): self
     {

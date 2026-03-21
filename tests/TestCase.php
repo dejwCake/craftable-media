@@ -6,14 +6,16 @@ namespace Brackets\Media\Tests;
 
 use Brackets\Media\MediaServiceProvider;
 use Brackets\Media\UrlGenerator\LocalUrlGenerator;
+use Illuminate\Contracts\Auth\Access\Gate;
+use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Routing\Router;
+use Illuminate\Support\Env;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Spatie\MediaLibrary\MediaLibraryServiceProvider;
 
@@ -29,6 +31,7 @@ abstract class TestCase extends Orchestra
     {
         parent::setUp();
 
+        $this->initializeDirectory($this->getTempDirectory());
         $this->setUpDatabase($this->app);
         $this->setUpTempTestFiles();
 
@@ -36,7 +39,7 @@ abstract class TestCase extends Orchestra
         $this->testModelWithCollections = TestModelWithCollections::first();
 
         // let's define simple routes
-        $this->app['router']->post('/test-model/create', static function (Request $request) {
+        $this->app->make(Router::class)->post('/test-model/create', static function (Request $request) {
             $sanitized = $request->only([
                 'name',
             ]);
@@ -44,7 +47,7 @@ abstract class TestCase extends Orchestra
             return TestModelWithCollections::create($sanitized);
         });
 
-        $this->app['router']->post('/test-model-disabled/create', static function (Request $request) {
+        $this->app->make(Router::class)->post('/test-model-disabled/create', static function (Request $request) {
             $sanitized = $request->only([
                 'name',
             ]);
@@ -73,39 +76,37 @@ abstract class TestCase extends Orchestra
      */
     protected function getEnvironmentSetUp($app): void
     {
-        $this->initializeDirectory($this->getTempDirectory());
-
-        if (env('DB_CONNECTION') === 'pgsql') {
-            $app['config']->set('database.default', 'pgsql');
-            $app['config']->set('database.connections.pgsql', [
+        if (Env::get('DB_CONNECTION') === 'pgsql') {
+            $app->make(Config::class)->set('database.default', 'pgsql');
+            $app->make(Config::class)->set('database.connections.pgsql', [
                 'driver' => 'pgsql',
                 'host' => 'pgsql',
                 'port' => '5432',
-                'database' => env('DB_DATABASE', 'laravel'),
-                'username' => env('DB_USERNAME', 'root'),
-                'password' => env('DB_PASSWORD', 'bestsecret'),
+                'database' => Env::get('DB_DATABASE', 'laravel'),
+                'username' => Env::get('DB_USERNAME', 'root'),
+                'password' => Env::get('DB_PASSWORD', 'bestsecret'),
                 'charset' => 'utf8',
                 'prefix' => '',
                 'schema' => 'public',
                 'sslmode' => 'prefer',
             ]);
-        } else if (env('DB_CONNECTION') === 'mysql') {
-            $app['config']->set('database.default', 'mysql');
-            $app['config']->set('database.connections.mysql', [
+        } else if (Env::get('DB_CONNECTION') === 'mysql') {
+            $app->make(Config::class)->set('database.default', 'mysql');
+            $app->make(Config::class)->set('database.connections.mysql', [
                 'driver' => 'mysql',
                 'host' => 'mysql',
                 'port' => '3306',
-                'database' => env('DB_DATABASE', 'laravel'),
-                'username' => env('DB_USERNAME', 'root'),
-                'password' => env('DB_PASSWORD', 'bestsecret'),
+                'database' => Env::get('DB_DATABASE', 'laravel'),
+                'username' => Env::get('DB_USERNAME', 'root'),
+                'password' => Env::get('DB_PASSWORD', 'bestsecret'),
                 'charset' => 'utf8',
                 'prefix' => '',
                 'schema' => 'public',
                 'sslmode' => 'prefer',
             ]);
         } else {
-            $app['config']->set('database.default', 'sqlite');
-            $app['config']->set('database.connections.sqlite', [
+            $app->make(Config::class)->set('database.default', 'sqlite');
+            $app->make(Config::class)->set('database.connections.sqlite', [
                 'driver' => 'sqlite',
                 'database' => ':memory:',
                 'prefix' => '',
@@ -113,33 +114,33 @@ abstract class TestCase extends Orchestra
         }
 
         // FIXME these config setting needs to have a look
-        $app['config']->set('filesystems.disks.media', [
+        $app->make(Config::class)->set('filesystems.disks.media', [
             'driver' => 'local',
-            'root' => public_path() . '/media',
+            'root' => $app->make('path.public') . '/media',
             'url' => '/media',
         ]);
 
 
         // FIXME these config setting needs to have a look
-        $app['config']->set('filesystems.disks.media_private', [
+        $app->make(Config::class)->set('filesystems.disks.media_private', [
 
             'driver' => 'local',
             'root' => $this->getMediaDirectory('storage'),
         ]);
 
-        $app['config']->set('filesystems.disks.uploads', [
+        $app->make(Config::class)->set('filesystems.disks.uploads', [
             'driver' => 'local',
             'root' => $this->getUploadsDirectory(),
         ]);
 
-        $app['config']->set('media-collections', [
+        $app->make(Config::class)->set('media-collections', [
             'public_disk' => 'media',
             'private_disk' => 'media_private',
 
             'auto_process' => true,
         ]);
 
-        $app['config']->set('media-library.url_generator', LocalUrlGenerator::class);
+        $app->make(Config::class)->set('media-library.url_generator', LocalUrlGenerator::class);
 
         // FIXME these config setting needs to have a look
         $app->bind('path.public', fn () => $this->getTempDirectory());
@@ -147,20 +148,23 @@ abstract class TestCase extends Orchestra
         // FIXME these config setting needs to have a look
         $app->bind('path.storage', fn () => $this->getTempDirectory());
 
-        $app['config']->set('app.key', '6rE9Nz59bGRbeMATftriyQjrpF7DcOQm');
+        $app->make(Config::class)->set('app.key', '6rE9Nz59bGRbeMATftriyQjrpF7DcOQm');
     }
 
     protected function setUpDatabase(Application $app): void
     {
-        $app['db']->connection()->getSchemaBuilder()->create('test_models', static function (Blueprint $table): void {
-            $table->increments('id');
-            $table->string('name');
-            $table->integer('width')->nullable();
-        });
+        $app->make('db')->connection()->getSchemaBuilder()->create(
+            'test_models',
+            static function (Blueprint $table): void {
+                $table->increments('id');
+                $table->string('name');
+                $table->integer('width')->nullable();
+            },
+        );
 
         TestModel::create(['name' => 'test']);
 
-        Schema::create('media', static function (Blueprint $table): void {
+        $app->make('db')->connection()->getSchemaBuilder()->create('media', static function (Blueprint $table): void {
             $table->id();
 
             $table->morphs('model');
@@ -187,16 +191,18 @@ abstract class TestCase extends Orchestra
     {
         $this->initializeDirectory($this->getTestFilesDirectory());
         $this->initializeDirectory($this->getUploadsDirectory());
-        File::copyDirectory(__DIR__ . '/testfiles', $this->getTestFilesDirectory());
-        File::copyDirectory(__DIR__ . '/testfiles', $this->getUploadsDirectory());
+        $filesystem = $this->app->make(Filesystem::class);
+        $filesystem->copyDirectory(__DIR__ . '/testfiles', $this->getTestFilesDirectory());
+        $filesystem->copyDirectory(__DIR__ . '/testfiles', $this->getUploadsDirectory());
     }
 
     protected function initializeDirectory(string $directory): void
     {
-        if (File::isDirectory($directory)) {
-            File::deleteDirectory($directory);
+        $filesystem = $this->app->make(Filesystem::class);
+        if ($filesystem->isDirectory($directory)) {
+            $filesystem->deleteDirectory($directory);
         }
-        File::makeDirectory($directory);
+        $filesystem->makeDirectory($directory);
     }
 
     public function getTempDirectory(string $suffix = ''): string
@@ -225,9 +231,10 @@ abstract class TestCase extends Orchestra
     public function disableAuthorization(): void
     {
         $this->actingAs(new User(), 'admin');
+        $gate = $this->app->make(Gate::class);
         //phpcs:ignore SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
-        Gate::define('admin', static fn ($user) => true);
+        $gate->define('admin', static fn ($user) => true);
         //phpcs:ignore SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
-        Gate::define('admin.upload', static fn ($user) => true);
+        $gate->define('admin.upload', static fn ($user) => true);
     }
 }

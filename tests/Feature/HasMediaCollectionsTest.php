@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\MimeTypeNotAllowed;
 
-class HasMediaCollectionsTest extends TestCase
+final class HasMediaCollectionsTest extends TestCase
 {
     public function testEmptyCollectionReturnsLaravelCollection(): void
     {
@@ -140,7 +140,7 @@ class HasMediaCollectionsTest extends TestCase
 
         $response->assertStatus(201);
 
-        $media = $this->app['db']->connection()->table('media')->first();
+        $media = $this->app->make('db')->connection()->table('media')->first();
 
         self::assertStringStartsWith('test.pdf', $media->file_name);
         self::assertStringStartsWith('{"name":"test"}', $media->custom_properties);
@@ -164,7 +164,7 @@ class HasMediaCollectionsTest extends TestCase
 
         $response->assertStatus(201);
 
-        self::assertEmpty($this->app['db']->connection()->table('media')->first());
+        self::assertEmpty($this->app->make('db')->connection()->table('media')->first());
     }
 
     public function testUserCannotUploadNotAllowedFileTypes(): void

@@ -8,20 +8,20 @@ use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Support\Collection;
 use Spatie\MediaLibrary\MediaCollections\MediaCollection as ParentMediaCollection;
 
-class MediaCollection extends ParentMediaCollection
+final class MediaCollection extends ParentMediaCollection
 {
-    protected bool $isImage = false;
+    private bool $isImage = false;
 
-    protected ?int $maxNumberOfFiles = null;
+    private ?int $maxNumberOfFiles = null;
 
-    protected int $maxFileSize;
+    private int $maxFileSize;
 
     /** @var array<string>|null */
-    protected ?array $acceptedFileTypes = null;
+    private ?array $acceptedFileTypes = null;
 
-    protected ?string $viewPermission = null;
+    private ?string $viewPermission = null;
 
-    protected ?string $uploadPermission = null;
+    private ?string $uploadPermission = null;
 
     private readonly Config $config;
 
@@ -101,7 +101,7 @@ class MediaCollection extends ParentMediaCollection
     public function accepts(string ...$acceptedFileTypes): self
     {
         $this->acceptedFileTypes = $acceptedFileTypes;
-        if ((new Collection($this->acceptedFileTypes))->count() > 0) {
+        if (count($this->acceptedFileTypes) > 0) {
             $this->isImage = (new Collection($this->acceptedFileTypes))->reject(
                 static fn ($fileType) => str_starts_with($fileType, 'image'),
             )->count() === 0;
@@ -143,19 +143,19 @@ class MediaCollection extends ParentMediaCollection
         return $this->isImage;
     }
 
-    //FIXME: metoda disk by mohla mat druhy nepovinny paramater private,
-    // ktory len nastavi interny flag na true. Aby sme vedeli presnejsie ci ide o private alebo nie
+    //FIXME: the disk method could have a second optional parameter private, which would just set an internal flag to
+    // true. So we could more precisely know whether it's private or not.
     public function isPrivate(): bool
     {
         return $this->diskName === $this->config->get('media-collections.private_disk');
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function getDisk(): ?string
+    public function getDisk(): string
     {
         return $this->diskName;
     }
@@ -165,7 +165,7 @@ class MediaCollection extends ParentMediaCollection
         return $this->maxNumberOfFiles;
     }
 
-    public function getMaxFileSize(): ?int
+    public function getMaxFileSize(): int
     {
         return $this->maxFileSize;
     }

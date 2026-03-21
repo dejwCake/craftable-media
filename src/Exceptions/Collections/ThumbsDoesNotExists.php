@@ -6,7 +6,7 @@ namespace Brackets\Media\Exceptions\Collections;
 
 use Exception;
 
-class ThumbsDoesNotExists extends Exception
+final class ThumbsDoesNotExists extends Exception
 {
     public static function thumbsConversionNotFound(): self
     {

@@ -9,13 +9,13 @@ use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 use Spatie\MediaLibrary\MediaCollections\Filesystem;
 
-class MediaServiceProvider extends ServiceProvider
+final class MediaServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
         $this->loadTranslationsFrom(__DIR__ . '/../lang', 'brackets/media');
 
-        $router = app(Router::class);
+        $router = $this->app->make(Router::class);
         if ($router->hasMiddlewareGroup('admin')) {
             $router->middleware(['web', 'admin'])
                 ->group(__DIR__ . '/../routes/web.php');
@@ -31,7 +31,6 @@ class MediaServiceProvider extends ServiceProvider
 
     public function register(): void
     {
-        //FIXME it would be nice if you could somehow publish into filesystems
         $this->mergeConfigFrom(__DIR__ . '/../config/filesystems.php', 'filesystems.disks');
 
         $this->mergeConfigFrom(__DIR__ . '/../config/media-collections.php', 'media-collections');
