@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Brackets\Media\UrlGenerator;
 
-use Override;
 use Illuminate\Contracts\Routing\UrlGenerator;
+use Override;
 use Spatie\MediaLibrary\Support\UrlGenerator\DefaultUrlGenerator as SpatieUrlGenerator;
 
 final class LocalUrlGenerator extends SpatieUrlGenerator
