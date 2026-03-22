@@ -6,6 +6,7 @@ namespace Brackets\Media\HasMedia;
 
 use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Support\Collection;
+use Override;
 use Spatie\MediaLibrary\MediaCollections\MediaCollection as ParentMediaCollection;
 
 final class MediaCollection extends ParentMediaCollection
@@ -40,7 +41,7 @@ final class MediaCollection extends ParentMediaCollection
     /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingAnyTypeHint
      */
-    #[\Override]
+    #[Override]
     public static function create($name): self
     {
         return new self($name);

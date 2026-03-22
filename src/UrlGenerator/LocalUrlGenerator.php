@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Brackets\Media\UrlGenerator;
 
+use Override;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Spatie\MediaLibrary\Support\UrlGenerator\DefaultUrlGenerator as SpatieUrlGenerator;
 
 final class LocalUrlGenerator extends SpatieUrlGenerator
 {
-    #[\Override]
+    #[Override]
     public function getUrl(): string
     {
         if ($this->media->disk !== 'media_private') {
