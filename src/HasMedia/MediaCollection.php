@@ -35,7 +35,7 @@ final class MediaCollection extends ParentMediaCollection
 
         $this->config = app(Config::class);
         $this->diskName = $this->config->get('media-collections.public_disk', 'media');
-        $this->maxFileSize = $this->config->get('media-library.max_file_size', 1024 * 1024 * 10);
+        $this->maxFileSize = $this->config->get('media-library.max_file_size', 10 * 1024 * 1024);
     }
 
     /**
