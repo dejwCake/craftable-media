@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Brackets\Media;
 
 use Brackets\Media\MediaCollections\Filesystem as FixedFilesystem;
+use Brackets\Media\Providers\ViewComposerProvider;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 use Spatie\MediaLibrary\MediaCollections\Filesystem;
@@ -42,6 +43,8 @@ final class MediaServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/auth.providers.admin_users.php', 'auth.providers.admin_users');
 
         $this->app->bind(Filesystem::class, FixedFilesystem::class);
+
+        $this->app->register(ViewComposerProvider::class);
     }
 
     private function publish(): void
