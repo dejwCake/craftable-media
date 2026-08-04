@@ -22,8 +22,8 @@ final class FileViewController extends BaseController
 {
     /**
      * @throws AuthorizationException
-     * @throws ValidationException
      * @throws FilesystemException
+     * @throws ValidationException
      */
     public function view(Request $request, FilesystemManager $filesystemManager, Gate $gate): Response
     {
