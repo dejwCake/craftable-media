@@ -6,6 +6,7 @@ namespace Brackets\Media\HasMedia;
 
 use Brackets\Media\Exceptions\FileCannotBeAdded\FileIsTooBig;
 use Brackets\Media\Exceptions\FileCannotBeAdded\TooManyFiles;
+use Illuminate\Container\Container;
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Http\File;
@@ -87,7 +88,7 @@ trait ProcessMediaTrait
                 }
             }
         } elseif (isset($inputMedium['action']) && $inputMedium['action'] === 'add') {
-            $filesystemManager = app(FilesystemManager::class);
+            $filesystemManager = Container::getInstance()->make(FilesystemManager::class);
             $mediumFileFullPath = $filesystemManager->disk('uploads')->path($inputMedium['path']);
 
             $this->addMedia($mediumFileFullPath)
@@ -106,7 +107,7 @@ trait ProcessMediaTrait
         $this->validateCollectionMediaCount($inputMediaForMediaCollection, $mediaCollection);
         $inputMediaForMediaCollection->each(function ($inputMedium) use ($mediaCollection): void {
             if ($inputMedium['action'] === 'add') {
-                $filesystemManager = app(FilesystemManager::class);
+                $filesystemManager = Container::getInstance()->make(FilesystemManager::class);
                 $mediumFileFullPath = $filesystemManager->disk('uploads')->path($inputMedium['path']);
                 $this->validateTypeOfFile($mediumFileFullPath, $mediaCollection);
                 $this->validateSize($mediumFileFullPath, $mediaCollection);
@@ -174,7 +175,7 @@ trait ProcessMediaTrait
      */
     protected function guardAgainstFileSizeLimit(string $filePath, float $maxFileSize, string $name): void
     {
-        $validator = app(Factory::class);
+        $validator = Container::getInstance()->make(Factory::class);
         assert($validator instanceof Factory);
         $validation = $validator->make(
             ['file' => new File($filePath)],

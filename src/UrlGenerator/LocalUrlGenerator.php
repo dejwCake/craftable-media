@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Brackets\Media\UrlGenerator;
 
+use Illuminate\Container\Container;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Override;
 use Spatie\MediaLibrary\Support\UrlGenerator\DefaultUrlGenerator as SpatieUrlGenerator;
@@ -19,7 +20,7 @@ final class LocalUrlGenerator extends SpatieUrlGenerator
 
         $url = $this->getPathRelativeToRoot();
 
-        $urlGenerator = app(UrlGenerator::class);
+        $urlGenerator = Container::getInstance()->make(UrlGenerator::class);
 
         return $urlGenerator->route('brackets/media::view', [], false)
             . '?path=' . $this->makeCompatibleForNonUnixHosts($url);

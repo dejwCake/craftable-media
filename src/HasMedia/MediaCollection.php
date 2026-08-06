@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Brackets\Media\HasMedia;
 
+use Illuminate\Container\Container;
 use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Support\Collection;
 use Override;
@@ -33,7 +34,7 @@ final class MediaCollection extends ParentMediaCollection
     {
         parent::__construct($name);
 
-        $this->config = app(Config::class);
+        $this->config = Container::getInstance()->make(Config::class);
         $this->diskName = $this->config->get('media-collections.public_disk', 'media');
         $this->maxFileSize = $this->config->get('media-library.max_file_size', 10 * 1024 * 1024);
     }
